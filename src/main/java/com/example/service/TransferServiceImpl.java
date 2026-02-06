@@ -16,8 +16,7 @@ public class TransferServiceImpl implements TransferService{
     @Autowired
     private AccountService accountService;
     @Override
-    public boolean isValidTransfer(TransferRequestDto transferRequestDto) throws
-            AccountNotFoundException, AccountNotActiveException, InsufficientBalanceException{
+    public boolean isValidTransfer(TransferRequestDto transferRequestDto){
 
             // does account exist?
             Account fromAccount = accountService.getAccountById(transferRequestDto.fromAccountId());
@@ -37,21 +36,32 @@ public class TransferServiceImpl implements TransferService{
     }
 
     @Override
+    public void executeTransfer(TransferRequestDto transferRequestDto){
+        Account fromAccount = accountService.getAccountById(transferRequestDto.fromAccountId());
+        Account toAccount = accountService.getAccountById(transferRequestDto.toAccountId());
+
+    }
+
+    @Override
     public void transfer(TransferRequestDto transferRequestDto) {
-        // create a transaction log
+        // create a transaction log - AOP
         TransactionLog transactionLog = new TransactionLog(
                 transferRequestDto.fromAccountId(),
                 transferRequestDto.toAccountId(),
                 transferRequestDto.amount()
         );
         try {
-            // validate transfer
+            // validate transfer - AOP
             isValidTransfer(transferRequestDto);
+            //execute func
             transactionLog.setStatus(TransactionStatus.SUCCESS);
-            // make the transfer
+
+
+            // exception handling and logging - AOP
         } catch (Exception e){
             transactionLog.setStatus(TransactionStatus.FAILURE);
             transactionLog.setFailureReason(e.getMessage());
+            throw e;
         }
         finally {
             System.out.println(transactionLog);
