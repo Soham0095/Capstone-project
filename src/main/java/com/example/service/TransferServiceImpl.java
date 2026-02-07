@@ -6,15 +6,23 @@ import com.example.entity.TransactionLog;
 import com.example.enums.AccountStatus;
 import com.example.enums.TransactionStatus;
 import com.example.exception.AccountNotActiveException;
-import com.example.exception.AccountNotFoundException;
 import com.example.exception.InsufficientBalanceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("transferService")
 public class TransferServiceImpl implements TransferService{
+
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private TransactionLogService transactionLogService;
+
+    /*
+    checks if the transfer request is valid. 
+    Throws RuntimExceptions: AccountNotFoundException, AccountNotActiveException, InsufficientBalanceException
+    */
     @Override
     public boolean isValidTransfer(TransferRequestDto transferRequestDto){
 
@@ -35,13 +43,20 @@ public class TransferServiceImpl implements TransferService{
         return true;
     }
 
+    // executes the transfer without any validation or logging.
+    @Transactional
     @Override
     public void executeTransfer(TransferRequestDto transferRequestDto){
         Account fromAccount = accountService.getAccountById(transferRequestDto.fromAccountId());
         Account toAccount = accountService.getAccountById(transferRequestDto.toAccountId());
+        fromAccount.setBalance(fromAccount.getBalance() - transferRequestDto.amount());
+        toAccount.setBalance(toAccount.getBalance() + transferRequestDto.amount());
+        accountService.updateAccount(fromAccount);
+        accountService.updateAccount(toAccount);
 
     }
 
+    // main transfer func - AOP
     @Override
     public void transfer(TransferRequestDto transferRequestDto) {
         // create a transaction log - AOP
@@ -54,8 +69,9 @@ public class TransferServiceImpl implements TransferService{
             // validate transfer - AOP
             isValidTransfer(transferRequestDto);
             //execute func
+            executeTransfer(transferRequestDto);
+           // update transaction log - AOP
             transactionLog.setStatus(TransactionStatus.SUCCESS);
-
 
             // exception handling and logging - AOP
         } catch (Exception e){
@@ -64,7 +80,8 @@ public class TransferServiceImpl implements TransferService{
             throw e;
         }
         finally {
-            System.out.println(transactionLog);
+            // save transaction log - AOP
+            transactionLogService.createTransactionLog(transactionLog);
         }
     }
 }

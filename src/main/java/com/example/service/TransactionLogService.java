@@ -1,11 +1,17 @@
 package com.example.service;
 
-import com.example.dto.TransactionLogDto;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+
 import org.springframework.stereotype.Service;
+
+import com.example.entity.TransactionLog;
 
 @Service
 public interface TransactionLogService {
-    public void createTransactionLog(TransactionLogDto transactionLogDto);
+    public void createTransactionLog(TransactionLog transactionLog);
+
+    public List<TransactionLog> getTransactionLogsByUserId(Integer userId);
 
 }

@@ -8,7 +8,6 @@ import com.example.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 
 @Service("accountService")
@@ -20,6 +19,7 @@ public class AccountServiceImpl implements AccountService{
         Account account = new Account();
         account.setId(request.id());
         account.setHolderName(request.holderName());
+        System.out.println(account);
         accountRepository.save(account);
     }
 
@@ -34,4 +34,7 @@ public class AccountServiceImpl implements AccountService{
                 .orElseThrow(()-> new AccountNotFoundException("Account " + id + " not found"));
     }
 
+        public void updateAccount(Account account){
+            accountRepository.save(account);
+        }
 }
