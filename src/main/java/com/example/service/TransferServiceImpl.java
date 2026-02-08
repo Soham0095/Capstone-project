@@ -59,29 +59,36 @@ public class TransferServiceImpl implements TransferService{
     // main transfer func - AOP
     @Override
     public void transfer(TransferRequestDto transferRequestDto) {
-        // create a transaction log - AOP
-        TransactionLog transactionLog = new TransactionLog(
-                transferRequestDto.fromAccountId(),
-                transferRequestDto.toAccountId(),
-                transferRequestDto.amount()
-        );
-        try {
-            // validate transfer - AOP
-            isValidTransfer(transferRequestDto);
-            //execute func
-            executeTransfer(transferRequestDto);
-           // update transaction log - AOP
-            transactionLog.setStatus(TransactionStatus.SUCCESS);
 
-            // exception handling and logging - AOP
-        } catch (Exception e){
-            transactionLog.setStatus(TransactionStatus.FAILURE);
-            transactionLog.setFailureReason(e.getMessage());
-            throw e;
-        }
-        finally {
-            // save transaction log - AOP
-            transactionLogService.createTransactionLog(transactionLog);
-        }
+
+        isValidTransfer(transferRequestDto);
+        executeTransfer(transferRequestDto);
     }
-}
+
+    }
+//        // create a transaction log - AOP
+//        TransactionLog transactionLog = new TransactionLog(
+//                transferRequestDto.fromAccountId(),
+//                transferRequestDto.toAccountId(),
+//                transferRequestDto.amount()
+//        );
+//        try {
+//            // validate transfer - AOP
+//            isValidTransfer(transferRequestDto);
+//            //execute func
+//            executeTransfer(transferRequestDto);
+//           // update transaction log - AOP
+//            transactionLog.setStatus(TransactionStatus.SUCCESS);
+//
+//            // exception handling and logging - AOP
+//        } catch (Exception e){
+//            transactionLog.setStatus(TransactionStatus.FAILURE);
+//            transactionLog.setFailureReason(e.getMessage());
+//            throw e;
+//        }
+//        finally {
+//            // save transaction log - AOP
+//            transactionLogService.createTransactionLog(transactionLog);
+//        }
+//    }
+//}
