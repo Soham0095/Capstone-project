@@ -18,12 +18,14 @@ public class TransactionLoggingAspect {
     @Autowired
     private TransactionLogRepository transactionLogRepository;
 
-    @AfterReturning(pointcut = "execution(* com.example.service.TransferService.transfer(..))")
+    @AfterReturning(pointcut = "execution(* com.example.service.TransferService.transfer(..))||" +
+    "execution(* com.example.service.AccountService.updateBalance(..))")
     public void logTransaction(JoinPoint joinPoint) {
         saveLog(joinPoint, "SUCCESS",null);
     }
 
-    @AfterThrowing(pointcut = "execution(* com.example.service.TransferService.transfer(..))", throwing = "ex")
+    @AfterThrowing(pointcut = "execution(* com.example.service.TransferService.transfer(..)) ||"+
+            "execution(* com.example.service.AccountService.updateBalance(..))", throwing = "ex")
     public void logTransactionException(JoinPoint joinPoint, Exception ex) {
         saveLog(joinPoint, "FAILED", ex.getMessage());
     }

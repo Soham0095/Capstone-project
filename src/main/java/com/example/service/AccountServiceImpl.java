@@ -2,12 +2,14 @@ package com.example.service;
 
 
 import com.example.dto.CreateAccountRequest;
+import com.example.dto.TransactionRequestDto;
 import com.example.entity.Account;
 import com.example.exception.AccountNotFoundException;
+import com.example.exception.InsufficientBalanceException;
 import com.example.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("accountService")
@@ -37,4 +39,28 @@ public class AccountServiceImpl implements AccountService{
         public void updateAccount(Account account){
             accountRepository.save(account);
         }
+
+
+        @Transactional
+        @Override
+        public void updateBalance(TransactionRequestDto TransactionRequestDto) {
+
+        Account account= accountRepository.findById(TransactionRequestDto.accountId())
+                        .orElseThrow(() -> new AccountNotFoundException("Account " + TransactionRequestDto.accountId() + " not found"));
+
+        if("withdraw".equalsIgnoreCase(TransactionRequestDto.action())){
+            if(account.getBalance() < TransactionRequestDto.amount()){
+                throw new InsufficientBalanceException("Insufficient balance");
+            }
+            account.setBalance(account.getBalance() - TransactionRequestDto.amount());
+        } else if("deposit".equalsIgnoreCase(TransactionRequestDto.action())){
+            account.setBalance(account.getBalance() + TransactionRequestDto.amount());
+        } else {
+            throw new IllegalArgumentException("Invalid action: " + TransactionRequestDto.action());
+        }
+
+        updateAccount(account);
+
+
+    }
 }

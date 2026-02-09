@@ -1,8 +1,10 @@
 package com.example.service;
 
 import com.example.dto.CreateAccountRequest;
+import com.example.dto.TransactionRequestDto;
 import com.example.entity.Account;
 import com.example.exception.AccountNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public interface AccountService {
@@ -13,4 +15,8 @@ public interface AccountService {
     Integer getBalance(int id);
 
     void updateAccount(Account account);
+
+    void updateBalance(TransactionRequestDto TransactionRequestDto);
+
+
 }

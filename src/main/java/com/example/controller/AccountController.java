@@ -1,5 +1,7 @@
 package com.example.controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.dto.CreateAccountRequest;
@@ -33,6 +35,17 @@ public class AccountController{
     public Integer getAccountBalance(@PathVariable int id) {
         return accountService.getBalance(id);
     }
-}
+
+
+    // updating account balance(withdraw or deposit)
+    @PatchMapping("/accounts/updateBalance")
+    public ResponseEntity<String> updateAccountBalance(@RequestBody com.example.dto.TransactionRequestDto transactionRequestDto) {
+
+        accountService.updateBalance(transactionRequestDto);
+        return new ResponseEntity<>("Account updated successfully", HttpStatus.OK);
+        }
+    }
+
+
 
 
