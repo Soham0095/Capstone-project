@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Aspect
 @Component
@@ -26,7 +28,8 @@ public class TransactionLoggingAspect {
         saveLog(joinPoint, "FAILED", ex.getMessage());
     }
 
-    private void saveLog(JoinPoint joinPoint, String status, String failure_reason) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW )
+    public void saveLog(JoinPoint joinPoint, String status, String failure_reason) {
         Object[] args = joinPoint.getArgs();
         if (args.length > 0 && args[0] instanceof com.example.dto.TransferRequestDto transferRequestDto) {
             com.example.entity.TransactionLog transactionLog = new com.example.entity.TransactionLog(
