@@ -10,4 +10,6 @@ public class CapstoneProjectApplication {
 		SpringApplication.run(CapstoneProjectApplication.class, args);
 	}
 
+	//API Documentation: http://localhost:8090/swagger-ui/index.html
+
 }
