@@ -8,6 +8,7 @@ import com.example.enums.TransactionStatus;
 import com.example.exception.AccountNotActiveException;
 import com.example.exception.AccountNotFoundException;
 import com.example.exception.InsufficientBalanceException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,37 @@ import org.springframework.stereotype.Service;
 public class TransferServiceImpl implements TransferService{
     @Autowired
     private AccountService accountService;
+
+
+    //soham
+    private TransactionLogService transactionLogService;
+
+    @Override
+    @Transactional
+    public void transfer(TransferRequestDto transferRequestDto){
+        // create a transaction log - AOP
+        TransactionLog transactionLog = new TransactionLog(
+                transferRequestDto.fromAccountId(),
+                transferRequestDto.toAccountId(),
+                transferRequestDto.amount()
+        );
+        try {
+            // validate transfer - AOP
+            isValidTransfer(transferRequestDto);
+            //execute func
+            transactionLog.setStatus(TransactionStatus.SUCCESS);
+        }
+        catch{ Exception e){
+            transactionLog.setStatus(TransactionStatus.FAILURE);
+            transactionLog.setFailureReason(e.getMessage());
+            throw e;
+        }
+        finally {
+            System.out.println(transactionLog);
+        }
+        }
+
+        //soham      
     @Override
     public boolean isValidTransfer(TransferRequestDto transferRequestDto){
 
