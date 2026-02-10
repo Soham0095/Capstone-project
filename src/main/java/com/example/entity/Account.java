@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 @Table(name="Account")
 @Setter
 @Getter
-@Data
 @NoArgsConstructor
+
 public class Account {
 
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
     private String holderName;
     private Integer balance = 0;
@@ -26,6 +26,7 @@ public class Account {
     private AccountStatus status = AccountStatus.active;
     private Long version = 0L;
     private LocalDateTime lastUpdated = LocalDateTime.now();
+    private String username;
 
     // setter getter methods
 
@@ -53,6 +54,13 @@ public class Account {
         return lastUpdated;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+//    public String password() {return password;}
+
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -77,15 +85,27 @@ public class Account {
         this.lastUpdated = lastUpdated;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+//    public void password(String password) { this.password=pa}
+    // This method is a placeholder for password hashing logic??
+
+
     @Override
     public String toString() {
         return "Account{" +
-                "id=" + id +
+                "id=" + id  +
                 ", holderName='" + holderName + '\'' +
                 ", balance=" + balance +
                 ", status=" + status +
                 ", version=" + version +
                 ", lastUpdated=" + lastUpdated +
+                ", username='" + username + '\'' +
+//                ", password='" + password() + '\'' +
                 '}';
     }
-}
+
+    }
+
