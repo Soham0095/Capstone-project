@@ -21,6 +21,7 @@ public class AccountServiceImpl implements AccountService{
         Account account = new Account();
         account.setId(request.id());
         account.setHolderName(request.holderName());
+        account.setUsername(request.username());
         System.out.println(account);
         accountRepository.save(account);
     }
