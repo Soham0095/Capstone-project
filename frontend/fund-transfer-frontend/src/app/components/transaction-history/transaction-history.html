@@ -1,0 +1,45 @@
+<div class="header">
+    <button class="back-btn" (click)="back()">←</button>
+    <h1>Transaction History</h1>
+</div>
+
+<div class="content">
+    <div class="filter-pills">
+        <button [class.active]="filter === 'All'" (click)="setFilter('All')">All</button>
+        <button [class.active]="filter === 'Sent'" (click)="setFilter('Sent')">Sent</button>
+        <button [class.active]="filter === 'Received'" (click)="setFilter('Received')">Received</button>
+    </div>
+
+    <div class="transaction-list">
+        <div class="transaction-item" *ngFor="let t of filteredTransactions">
+            <div class="transaction-icon" [class.sent]="t.type === 'sent'" [class.received]="t.type === 'received'">
+                {{ t.type === 'sent' ? '↑' : '↓' }}
+            </div>
+            <div class="transaction-details">
+                <div class="transaction-name">{{ t.name }}</div>
+                <div class="transaction-date">{{ t.date }}</div>
+            </div>
+            <div class="transaction-amount-status">
+                <div class="amount" [class.negative]="t.type === 'sent'" [class.positive]="t.type === 'received'">
+                    {{ t.amount }}
+                </div>
+                <div class="status">{{ t.status }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-item" routerLink="/dashboard">
+        <div class="nav-icon">🏠</div>
+        <span>Home</span>
+    </div>
+    <div class="nav-item" routerLink="/transfer">
+        <div class="nav-icon">💸</div>
+        <span>Transfer</span>
+    </div>
+    <div class="nav-item active" routerLink="/transaction-history">
+        <div class="nav-icon">📜</div>
+        <span>History</span>
+    </div>
+</div>
