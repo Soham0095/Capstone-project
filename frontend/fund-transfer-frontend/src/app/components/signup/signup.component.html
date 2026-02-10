@@ -1,0 +1,35 @@
+<div class="card-wrapper">
+  <div class="icon-circle"></div>
+  <div class="card-header">
+    <h2>Create Account</h2>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="login-form" *ngIf="!successMessage">
+    <label>Account Holder Name</label>
+    <input formControlName="name" type="text" placeholder="Enter your full name" />
+    <div class="error" *ngIf="name?.touched && name?.invalid">Name is required</div>
+
+    <label>Username</label>
+    <input formControlName="username" type="text" placeholder="Enter your username" />
+    <div class="error" *ngIf="username?.touched && username?.invalid">Username is required</div>
+
+    <label>Password</label>
+    <input formControlName="password" type="password" placeholder="Enter your password" />
+    <div class="error" *ngIf="password?.touched && password?.invalid">Password is required</div>
+
+    <div *ngIf="errorMessage" class="alert">{{ errorMessage }}</div>
+
+    <button type="submit" [disabled]="loading">{{ loading ? 'Creating Account...' : 'Sign Up' }}</button>
+  </form>
+
+  <div *ngIf="successMessage" class="success-message">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Success!</div>
+    <div class="success-text">{{ successMessage }}</div>
+    <div class="success-subtext">Redirecting to login...</div>
+  </div>
+
+  <div class="forgot-password">
+    <a href="javascript:void(0)" (click)="goToLogin()">Already have an account? Login here</a>
+  </div>
+</div>

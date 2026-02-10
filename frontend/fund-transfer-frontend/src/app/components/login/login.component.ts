@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { AccountService } from '../services/account.service';
+import { AccountStore } from '../services/account-store.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,13 @@ export class LoginComponent {
   loading = false;
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private accountService: AccountService,
+    private accountStore: AccountStore,
+    private router: Router
+  ) {
     this.form = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
@@ -29,6 +37,10 @@ export class LoginComponent {
 
   get password() {
     return this.form.get('password');
+  }
+
+  navigateToSignup(): void {
+    this.router.navigate(['/signup']);
   }
 
   submit(): void {
@@ -44,14 +56,27 @@ export class LoginComponent {
     // Try real backend; if it errors (e.g., 404 during dev), fallback to mockLogin
     this.auth.login(username as string, password as string).subscribe({
       next: () => {
-        this.loading = false;
-        this.router.navigate(['/dashboard']);
+        // After login, fetch account details and store globally
+        this.accountService.getMyAccount().subscribe((acc) => {
+          this.accountStore.setAccount(acc);
+          this.loading = false;
+          this.router.navigate(['/dashboard']);
+        }, () => {
+          this.loading = false;
+          this.router.navigate(['/dashboard']);
+        });
       },
       error: () => {
         // Fallback to mock login so frontend development can continue
         this.auth.mockLogin(username as string, password as string).subscribe(() => {
-          this.loading = false;
-          this.router.navigate(['/dashboard']);
+          this.accountService.getMyAccount().subscribe((acc) => {
+            this.accountStore.setAccount(acc);
+            this.loading = false;
+            this.router.navigate(['/dashboard']);
+          }, () => {
+            this.loading = false;
+            this.router.navigate(['/dashboard']);
+          });
         });
       }
     });
