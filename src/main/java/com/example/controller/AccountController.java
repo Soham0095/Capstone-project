@@ -29,12 +29,14 @@ public class AccountController{
     public Account getAccountById(@PathVariable int id){
         return accountService.getAccountById(id);
     }
+    //handled exception
 
     // getting account balance by id
     @GetMapping("/accounts/getBalance/{id}")
     public Integer getAccountBalance(@PathVariable int id) {
         return accountService.getBalance(id);
     }
+    //handled exception
 
 
     // updating account balance(withdraw or deposit)
@@ -46,6 +48,7 @@ public class AccountController{
         }
     }
 
+    // all exception handling tested
 
 
 
