@@ -7,6 +7,16 @@ spring:
     url: jdbc:mysql://localhost:3306/account
     username: root
     password: Root123$
+  
+  ai:
+    openai:
+      api-key: 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
+      base-url: https://api.groq.com/openai
+      chat:
+        options:
+          model: llama-3.3-70b-versatile
+          temperature: 0.6
+
 
 
 server:
