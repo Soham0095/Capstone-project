@@ -2,6 +2,7 @@ package com.example.service;
 
 
 import com.example.dto.CreateAccountRequest;
+import com.example.dto.LoginRequestDto;
 import com.example.dto.TransactionRequestDto;
 import com.example.entity.Account;
 import com.example.exception.AccountNotFoundException;
@@ -19,12 +20,27 @@ public class AccountServiceImpl implements AccountService{
 
     public void createAccount(CreateAccountRequest request){
         Account account = new Account();
-        account.setId(request.id());
+//        account.setId(request.id());
         account.setHolderName(request.holderName());
         account.setUsername(request.username());
         account.setpassword(request.password());
         System.out.println(account);
         accountRepository.save(account);
+    }
+
+    public String Login(LoginRequestDto loginRequestDto) {
+        // 1. Fetch account (Uses your existing AccountNotFoundException)
+        Account account = (Account) accountRepository.findByUsername(loginRequestDto.username())
+                .orElseThrow(() -> new AccountNotFoundException("Account with username " + loginRequestDto.username() + " not found"));
+
+        // 2. Validate password
+        if (!account.getPassword().equals(loginRequestDto.password())) {
+            // Option A: Throw a custom exception that your GlobalExceptionHandler catches
+            // Option B: Return a string that the Controller interprets
+            return "Invalid Credentials";
+        }
+
+        return "Login Successful";
     }
 
     public Account getAccountById(int id){

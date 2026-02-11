@@ -12,6 +12,8 @@ public interface AccountRepository extends JpaRepository <Account, Integer>{
     @Query("SELECT a.balance from Account a where a.id = ?1")
     Optional<Integer> getBalance(Integer id);
 
+    Optional<Object> findByUsername(String username);
+
 }
 
 

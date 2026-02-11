@@ -59,7 +59,7 @@ public class Account {
         return username;
     }
 
-    public String getpassword() {return password;}
+    public String getPassword() {return password;}
 
 
     public void setId(Integer id) {
@@ -108,5 +108,6 @@ public class Account {
                 '}';
     }
 
-    }
+
+}
 

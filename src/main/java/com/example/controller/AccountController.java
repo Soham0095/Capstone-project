@@ -1,4 +1,5 @@
 package com.example.controller;
+import com.example.dto.LoginRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,22 @@ public class AccountController{
 
         accountService.createAccount(request);
 
-        return "Account created for " + request.id();
+        return "Account created for " + request.username();
     }
 
+
+    //LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto) {
+        String result = accountService.Login(loginRequestDto);
+
+        if ("Login Successful".equals(result)) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            // Returning Unauthorized for failed match
+            return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+        }
+    }
     // getting account details by id
     @GetMapping("/accounts/{id}")
     public Account getAccountById(@PathVariable int id){

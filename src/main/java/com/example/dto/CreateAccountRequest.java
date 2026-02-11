@@ -1,7 +1,7 @@
 package com.example.dto;
 
 public record CreateAccountRequest(
-        Integer id,
+//        Integer id,
         String holderName,
         String username,
 
