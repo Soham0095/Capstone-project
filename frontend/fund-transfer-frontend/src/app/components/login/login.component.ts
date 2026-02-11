@@ -52,6 +52,15 @@ export class LoginComponent {
 
     const { username, password } = this.form.value;
     this.loading = true;
+    // Quick client-side admin shortcut: hardcoded admin credentials
+    if (username === 'admin' && password === 'admin*123') {
+      // set a mock token for admin so other parts of app consider user authenticated
+      this.auth.mockLogin(username as string, password as string).subscribe(() => {
+        this.loading = false;
+        this.router.navigate(['/admin-ai']);
+      });
+      return;
+    }
 
     // Try real backend; if it errors (e.g., 404 during dev), fallback to mockLogin
     this.auth.login(username as string, password as string).subscribe({

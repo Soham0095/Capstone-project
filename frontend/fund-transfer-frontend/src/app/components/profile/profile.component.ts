@@ -1,10 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AccountStore, Account } from '../services/account-store.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [CommonModule],
-  template: `<div style="padding:24px"><h3>Profile (placeholder)</h3><p>This page will be implemented later.</p></div>`
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent {}
+export class ProfileComponent implements OnInit {
+  account: Account | null = null;
+
+  constructor(private accountStore: AccountStore) {}
+
+  ngOnInit(): void {
+    this.account = this.accountStore.getAccount();
+  }
+}

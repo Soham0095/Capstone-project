@@ -1,0 +1,46 @@
+<div class="icon-circle"></div>
+<div class="card-header">
+  <h2>Admin Console</h2>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="query-form">
+  <label>Enter Query</label>
+  <textarea formControlName="query" placeholder="e.g. who has 0 acc balance" rows="4"></textarea>
+
+  <button type="submit" [disabled]="loading">{{ loading ? 'Running Query...' : 'Run Query' }}</button>
+</form>
+
+<!-- Results appear only after query runs -->
+<div class="result-area" *ngIf="result">
+  <h3 class="result-header">Response</h3>
+
+    <!-- If array of objects, render as table -->
+    <table *ngIf="Array.isArray(result) && result.length > 0" class="result-table">
+      <thead>
+        <tr>
+          <th *ngFor="let c of columns">{{ c }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of result">
+          <td *ngFor="let c of columns">{{ row[c] }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- If object, show key/value table -->
+    <table *ngIf="!Array.isArray(result) && result && columns.length > 0" class="result-table">
+      <thead>
+        <tr><th>Key</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let k of columns">
+          <td>{{ k }}</td>
+          <td>{{ result[k] }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  <!-- Fallback: show raw JSON -->
+  <pre *ngIf="!columns.length">{{ result | json }}</pre>
+</div>

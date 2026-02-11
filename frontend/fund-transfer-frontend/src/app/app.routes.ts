@@ -5,6 +5,7 @@ import { TransactionHistory } from './components/transaction-history/transaction
 import { ProfileComponent } from './components/profile/profile.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { Transfer } from './components/transfer/transfer';
+import { AdminAiComponent } from './components/admin-ai/admin-ai.component';
 
 export const routes: Routes = [
 	{ path: '', component: LoginComponent },
@@ -12,5 +13,6 @@ export const routes: Routes = [
 	{ path: 'dashboard', component: DashboardComponent },
 	{ path: 'transaction-history', component: TransactionHistory },
 	{ path: 'transfer', component: Transfer },
+	{ path: 'admin-ai', component: AdminAiComponent },
 	{ path: 'profile', component: ProfileComponent }
 ];

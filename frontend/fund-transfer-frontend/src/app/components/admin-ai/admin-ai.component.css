@@ -1,0 +1,150 @@
+:host {
+  width: 100%;
+  padding: 40px 32px;
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  background: #ff9800;
+  border-radius: 50%;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.icon-circle::after {
+  content: '⚙';
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #212121;
+  font-weight: 500;
+}
+
+.query-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.query-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #424242;
+  font-weight: 500;
+}
+
+.query-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  resize: none;
+}
+
+.query-form textarea:focus {
+  outline: none;
+  border-color: #ff9800;
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+}
+
+.query-form textarea::placeholder {
+  color: #bdbdbd;
+}
+
+.query-form button {
+  width: 100%;
+  padding: 12px 16px;
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+.query-form button:hover:not(:disabled) {
+  background: #f57c00;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.query-form button:disabled {
+  background: #ffb74d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.result-area {
+  margin-top: 32px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212121;
+  margin: 0 0 16px 0;
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.result-table th {
+  background: #f5f5f5;
+  color: #212121;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.result-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  color: #616161;
+}
+
+.result-table tr:last-child td {
+  border-bottom: none;
+}
+
+.result-table tbody tr:hover {
+  background: #fafafa;
+}

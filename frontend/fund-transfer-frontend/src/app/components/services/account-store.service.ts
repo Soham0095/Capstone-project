@@ -6,6 +6,9 @@ export interface Account {
   name: string;
   accountNumber?: string;
   availableBalance?: number;
+  balance?: number;
+  status?: string;
+  version?: number;
 }
 
 @Injectable({ providedIn: 'root' })

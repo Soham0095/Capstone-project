@@ -1,0 +1,39 @@
+<div class="icon-circle"></div>
+<div class="card-header">
+  <h2>Account Profile</h2>
+</div>
+
+<div class="profile-container" *ngIf="account; else noAccount">
+  <div class="details-section">
+    <div class="detail-row">
+      <span class="detail-label">Account Number</span>
+      <span class="detail-value">{{ account.accountNumber || 'N/A' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Account Holder Name</span>
+      <span class="detail-value">{{ account.name || 'N/A' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Balance</span>
+      <span class="detail-value">₹ {{ (account.balance || account.availableBalance || 0) | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Status</span>
+      <span class="detail-value" [ngClass]="'status-' + (account.status || 'unknown')">{{ account.status || 'N/A' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Version</span>
+      <span class="detail-value">{{ account.version || 'N/A' }}</span>
+    </div>
+  </div>
+</div>
+
+<ng-template #noAccount>
+  <div class="no-account-message">
+    <p>No account information available.</p>
+  </div>
+</ng-template>
