@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-
+import { RouterLink } from '@angular/router';
+import { GoBackDirective } from '../../directives/go-back-directive';
 interface Transaction {
   id: number;
   type: 'sent' | 'received';
@@ -14,7 +14,7 @@ interface Transaction {
 @Component({
   selector: 'app-transaction-history',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, GoBackDirective],
   templateUrl: './transaction-history.html',
   styleUrl: './transaction-history.css',
 })
@@ -113,9 +113,4 @@ export class TransactionHistory {
     this.filter = filter;
   }
 
-  constructor(private router: Router) { }
-
-  back() {
-    this.router.navigate(['/dashboard']);
-  }
 }

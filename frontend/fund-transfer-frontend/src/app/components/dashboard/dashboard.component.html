@@ -1,35 +1,37 @@
-
 <div class="card-wrapper">
-  <div class="greeting">Good Morning,<br/><span class="user-name">{{ account?.name || 'User' }}</span> 
+  <div class="greeting">Good Morning,<br /><span class="user-name">{{ account?.name || 'User' }}</span>
 
-  <div class="balance-card">
-    <div class="balance-label">Available Balance</div>
-    <div class="balance-amount">₹ {{ (balance || 0) | number:'1.2-2' }}</div>
-    <div class="account-number">Account: {{ account?.accountNumber || 'XXXX-XXXX-1234' }}</div>
-  </div>
+    <div class="balance-card">
+      <div class="balance-label">Available Balance</div>
+      <div class="balance-amount">₹ {{ (balance || 0) | number:'1.2-2' }}</div>
+      <div class="account-number">Account: {{ account?.accountNumber || 'XXXX-XXXX-1234' }}</div>
+    </div>
 
-  <div class="grid-actions">
-    <div class="action" (click)="navigateTo('/transfer')">
-      <div class="icon">💸</div>
-      <div class="label">Transfer</div>
+    <div class="grid-actions">
+      <div class="action" (click)="navigateTo('/transfer')">
+        <div class="icon">💸</div>
+        <div class="label">Transfer</div>
+      </div>
+      <div class="action" (click)="navigateTo('/transaction-history')">
+        <div class="icon">📜</div>
+        <div class="label">History</div>
+      </div>
+      <div class="action" (click)="navigateTo('/profile')">
+        <div class="icon">👤</div>
+        <div class="label">Profile</div>
+      </div>
+      <div class="action" (click)="logout()">
+        <div class="icon">🔒</div>
+        <div class="label">Logout</div>
+      </div>
     </div>
-    <div class="action" (click)="navigateTo('/transaction-history')">
-      <div class="icon">📜</div>
-      <div class="label">History</div>
-    </div>
-    <div class="action" (click)="navigateTo('/profile')">
-      <div class="icon">👤</div>
-      <div class="label">Profile</div>
-    </div>
-    <div class="action" (click)="logout()">
-      <div class="icon">🔒</div>
-      <div class="label">Logout</div>
-    </div>
-  </div>
 
-  <div class="bottom-nav">
-    <div class="nav-item" (click)="navigateTo('/dashboard')">🏠<div class="nav-label">Home</div></div>
-    <div class="nav-item" (click)="navigateTo('/transfer')">💱<div class="nav-label">Transfer</div></div>
-    <div class="nav-item" (click)="navigateTo('/transaction-history')">📚<div class="nav-label">History</div></div>
+    <div class="bottom-nav">
+      <div class="nav-item" (click)="navigateTo('/dashboard')">🏠<div class="nav-label">Home</div>
+      </div>
+      <div class="nav-item" (click)="navigateTo('/transfer')">💱<div class="nav-label">Transfer</div>
+      </div>
+      <div class="nav-item" (click)="navigateTo('/transaction-history')">📚<div class="nav-label">History</div>
+      </div>
+    </div>
   </div>
-</div>

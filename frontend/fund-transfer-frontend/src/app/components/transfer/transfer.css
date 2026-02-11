@@ -1,0 +1,209 @@
+:host {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+}
+
+
+/* Header */
+.card-header {
+    background-color: #1976d2;
+    /* Primary Blue */
+    color: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.back-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+}
+
+.back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Body */
+.card-body {
+    padding: 20px;
+}
+
+/* Sender Info */
+.sender-info {
+    background-color: #f5f5f5;
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #1976d2;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.sender-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.sender-name {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.sender-meta {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Direction Indicator */
+.direction-indicator {
+    display: flex;
+    justify-content: center;
+    margin-top: -12px;
+    margin-bottom: 12px;
+}
+
+.arrow-down {
+    color: #1976d2;
+    font-size: 20px;
+    background: #fff;
+    /* mask line if needed, but here simple placement */
+    padding: 0 8px;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 12px;
+    font-size: 14px;
+    border: 1px solid #1976d2;
+    /* Matching the blue border in screenshot for active fields */
+    border-radius: 8px;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+    outline: none;
+}
+
+/* Remarks has a grey border in the screenshot */
+#remarks {
+    border-color: #e0e0e0;
+}
+
+#remarks:focus {
+    border-color: #1976d2;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+/* Amount Input Specifics */
+.input-wrapper {
+    position: relative;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    color: #333;
+    font-size: 18px;
+}
+
+.amount-input {
+    padding-left: 30px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+}
+
+.btn-primary {
+    background-color: #43a047;
+    /* Green */
+    color: white;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-secondary {
+    background-color: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background-color: #f5f5f5;
+}

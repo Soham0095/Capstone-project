@@ -1,0 +1,49 @@
+<div class="card-header">
+    <button appGoBackDirective class="back-btn">
+        <span class="material-icons-outlined">←</span>
+    </button>
+    <h2>Transfer Money</h2>
+</div>
+
+<div class="card-body">
+    <!-- Sender Info -->
+    <div class="sender-info">
+        <div class="avatar">JS</div>
+        <div class="sender-details">
+            <p class="sender-name"><strong>From: John Smith</strong></p>
+            <p class="sender-meta">Account: XXXX-1234 • Bal: ₹45,250</p>
+        </div>
+    </div>
+
+    <!-- Direction Arrow -->
+    <div class="direction-indicator">
+        <span class="arrow-down">↓</span>
+    </div>
+
+    <!-- To Account Input -->
+    <div class="form-group">
+        <label for="toAccount">To Account Number</label>
+        <input type="text" id="toAccount" class="form-control" placeholder="Enter destination account ID">
+    </div>
+
+    <!-- Amount Input -->
+    <div class="form-group">
+        <label for="amount">Amount</label>
+        <div class="input-wrapper">
+            <span class="currency-symbol">₹</span>
+            <input type="text" id="amount" class="form-control amount-input" value="500.00">
+        </div>
+    </div>
+
+    <!-- Remarks Input -->
+    <div class="form-group">
+        <label for="remarks">Remarks (Optional)</label>
+        <input type="text" id="remarks" class="form-control" placeholder="Add a note">
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions">
+        <button class="btn btn-primary">Transfer Now</button>
+        <button class="btn btn-secondary">Cancel</button>
+    </div>
+</div>

@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private accountService: AccountService,
     private auth: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.sub.add(
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(path: string) {
-    this.router.navigate([path]);
+    this.router.navigateByUrl(path);
   }
 
   logout(): void {
