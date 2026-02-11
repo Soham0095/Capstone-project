@@ -4,17 +4,13 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/account
+    url: jdbc:mysql://localhost:3306/todos_db
     username: root
     password: Root123$
 
-
-server:
-  port: 8090
-
   ai:
     openai:
-      api-key: sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      api-key: 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
       base-url: https://api.groq.com/openai
       chat:
         options:
@@ -22,4 +18,9 @@ server:
           temperature: 0.6
 
 
-debug: true
+server:
+  port: 8090
+
+
+
+
