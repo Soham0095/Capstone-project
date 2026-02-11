@@ -27,6 +27,7 @@ public class Account {
     private Long version = 0L;
     private LocalDateTime lastUpdated = LocalDateTime.now();
     private String username;
+    private String password;
 
     // setter getter methods
 
@@ -58,7 +59,7 @@ public class Account {
         return username;
     }
 
-//    public String password() {return password;}
+    public String getpassword() {return password;}
 
 
     public void setId(Integer id) {
@@ -89,7 +90,7 @@ public class Account {
         this.username = username;
     }
 
-//    public void password(String password) { this.password=pa}
+    public void setpassword(String password) { this.password=password;}
     // This method is a placeholder for password hashing logic??
 
 
@@ -103,7 +104,7 @@ public class Account {
                 ", version=" + version +
                 ", lastUpdated=" + lastUpdated +
                 ", username='" + username + '\'' +
-//                ", password='" + password() + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 
