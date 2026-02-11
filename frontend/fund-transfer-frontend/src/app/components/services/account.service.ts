@@ -4,12 +4,15 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Account } from './account-store.service';
 import { AuthService } from './auth.service';
+import { SignupRequest, ApiResponse } from '../../models/create-account-request';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
-  //should replace later 
-  private meUrl = '/api/accounts/me';
-  private balanceUrl = (accountId: string) => `/api/accounts/${accountId}/balance`;
+  // Backend API endpoints
+  private baseUrl = 'http://localhost:8080';
+  private meUrl = `${this.baseUrl}/api/accounts/me`;
+  private balanceUrl = (accountId: string) => `${this.baseUrl}/api/accounts/${accountId}/balance`;
+  private signupUrl = `${this.baseUrl}/newAccount`;
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -23,7 +26,7 @@ export class AccountService {
         // mock details to simple displaay for now
         const mock: Account = {
           id: 'mock-1',
-          name: 'John Smith',
+          holder_name: 'John Smith',
           accountNumber: 'XXXX-XXXX-1234',
           availableBalance: 45250.0
         };
@@ -42,16 +45,13 @@ export class AccountService {
       catchError(() => of(0))
     );
   }
+signup(data: SignupRequest): Observable<ApiResponse> {
+  return this.http.post<ApiResponse>(this.signupUrl, data).pipe(
+    catchError((error) => {
+      console.error('Signup error:', error);
+      throw error;
+    })
+  );
+}
 
-  signup(username: string, password: string, name: string): Observable<{ message: string }> {
-    // Placeholder endpoint — replace with real backend URL
-    const signupUrl = '/api/auth/signup';
-
-    return this.http.post<{ message: string }>(signupUrl, { username, password, name }).pipe(
-      catchError(() => {
-        // Mock success for development
-        return of({ message: 'Account created successfully' });
-      })
-    );
-  }
 }

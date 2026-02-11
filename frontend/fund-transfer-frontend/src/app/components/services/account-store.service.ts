@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface Account {
   id?: string;
-  name: string;
+  holder_name: string;
   accountNumber?: string;
   availableBalance?: number;
   balance?: number;

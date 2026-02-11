@@ -4,10 +4,10 @@
     <h2>Create Account</h2>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="submit()" class="login-form" *ngIf="!successMessage">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
     <label>Account Holder Name</label>
-    <input formControlName="name" type="text" placeholder="Enter your full name" />
-    <div class="error" *ngIf="name?.touched && name?.invalid">Name is required</div>
+    <input formControlName="holderName" type="text" placeholder="Enter your full name" />
+    <div class="error" *ngIf="holderName?.touched && holderName?.invalid">Name is required</div>
 
     <label>Username</label>
     <input formControlName="username" type="text" placeholder="Enter your username" />
@@ -15,21 +15,27 @@
 
     <label>Password</label>
     <input formControlName="password" type="password" placeholder="Enter your password" />
-    <div class="error" *ngIf="password?.touched && password?.invalid">Password is required</div>
+    <div class="error" *ngIf="password?.touched && password?.invalid">
+      <span *ngIf="password?.errors?.['required']">Password is required</span>
+      <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+    </div>
 
     <div *ngIf="errorMessage" class="alert">{{ errorMessage }}</div>
 
     <button type="submit" [disabled]="loading">{{ loading ? 'Creating Account...' : 'Sign Up' }}</button>
   </form>
 
-  <div *ngIf="successMessage" class="success-message">
-    <div class="success-icon">✓</div>
-    <div class="success-title">Success!</div>
-    <div class="success-text">{{ successMessage }}</div>
-    <div class="success-subtext">Redirecting to login...</div>
-  </div>
-
   <div class="forgot-password">
     <a href="javascript:void(0)" (click)="goToLogin()">Already have an account? Login here</a>
+  </div>
+</div>
+
+<!-- Success Popup Modal -->
+<div class="modal-overlay" *ngIf="successMessage">
+  <div class="modal-content">
+    <div class="modal-icon">✓</div>
+    <h2 class="modal-title">Sign Up Successful!</h2>
+    <p class="modal-text">{{ successMessage }}</p>
+    <p class="modal-redirect">Redirecting to login in 2 seconds...</p>
   </div>
 </div>

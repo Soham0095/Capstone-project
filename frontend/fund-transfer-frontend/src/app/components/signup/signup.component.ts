@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
+import { SignupRequest, ApiResponse } from '../../models/create-account-request';
 
 @Component({
   selector: 'app-signup',
@@ -25,7 +26,7 @@ export class SignupComponent {
     this.form = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      name: ['', [Validators.required]]
+      holderName: ['', [Validators.required]]
     });
   }
 
@@ -37,8 +38,8 @@ export class SignupComponent {
     return this.form.get('password');
   }
 
-  get name() {
-    return this.form.get('name');
+  get holderName() {
+    return this.form.get('holderName');
   }
 
   submit(): void {
@@ -50,22 +51,23 @@ export class SignupComponent {
       return;
     }
 
-    const { username, password, name } = this.form.value;
+    const formData = this.form.value as SignupRequest;
     this.loading = true;
 
-    this.accountService.signup(username as string, password as string, name as string).subscribe({
-      next: (response) => {
+    this.accountService.signup(formData).subscribe({
+      next: (response: ApiResponse) => {
         this.loading = false;
-        this.successMessage = response.message || 'Account created successfully!';
+        // Response is ApiResponse object with message property
+        this.successMessage = response?.message || 'Account created successfully!';
         
-        // Redirect to login after 2 seconds
+        // Give more time to display the modal before redirecting
         setTimeout(() => {
           this.router.navigate(['/']);
-        }, 2000);
+        }, 3000);
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error?.error?.message || 'Failed to create account. Please try again.';
+        this.errorMessage = error?.error?.message || error?.error || 'Failed to create account. Please try again.';
       }
     });
   }
