@@ -19,6 +19,7 @@ public class Account {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String holderName;
     private Integer balance = 0;
