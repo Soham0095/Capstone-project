@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dto.CreateAccountRequest;
 import com.example.dto.LoginRequestDto;
+import com.example.dto.LoginResponseDto;
 import com.example.dto.TransactionRequestDto;
 import com.example.entity.Account;
 import com.example.exception.AccountNotFoundException;
@@ -19,7 +20,7 @@ public interface AccountService {
 
     void updateBalance(TransactionRequestDto TransactionRequestDto);
 
-    String Login(LoginRequestDto loginRequestDto);
+    LoginResponseDto Login(LoginRequestDto loginRequestDto);
 
 
 }

@@ -3,6 +3,7 @@ package com.example.service;
 
 import com.example.dto.CreateAccountRequest;
 import com.example.dto.LoginRequestDto;
+import com.example.dto.LoginResponseDto;
 import com.example.dto.TransactionRequestDto;
 import com.example.entity.Account;
 import com.example.exception.AccountNotFoundException;
@@ -28,24 +29,28 @@ public class AccountServiceImpl implements AccountService{
         accountRepository.save(account);
     }
 
-    public String Login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto Login(LoginRequestDto loginRequestDto) {
         // 1. Fetch account (Uses your existing AccountNotFoundException)
         Account account = (Account) accountRepository.findByUsername(loginRequestDto.username())
                 .orElseThrow(() -> new AccountNotFoundException("Account with username " + loginRequestDto.username() + " not found"));
-
+        String message;
+        boolean ok = true;
         // 2. Validate password
         if (!account.getPassword().equals(loginRequestDto.password())) {
             // Option A: Throw a custom exception that your GlobalExceptionHandler catches
             // Option B: Return a string that the Controller interprets
-            return "Invalid Credentials";
+            message = "Invalid Credentials";
+            ok = false;
         }
-
-        return "Login Successful";
+        else message = "Login Successful";
+        //masking password
+        account.setpassword("");
+        return new LoginResponseDto(message, ok, account);
     }
 
     public Account getAccountById(int id){
         return accountRepository.findById(id)
-                                .orElseThrow(() -> new AccountNotFoundException("Account " + id + " not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account " + id + " not found"));
     }
 
     public Integer getBalance(int id){
@@ -54,17 +59,17 @@ public class AccountServiceImpl implements AccountService{
                 .orElseThrow(()-> new AccountNotFoundException("Account " + id + " not found"));
     }
 
-        public void updateAccount(Account account){
-            accountRepository.save(account);
-        }
+    public void updateAccount(Account account){
+        accountRepository.save(account);
+    }
 
 
-        @Transactional
-        @Override
-        public void updateBalance(TransactionRequestDto TransactionRequestDto) {
+    @Transactional
+    @Override
+    public void updateBalance(TransactionRequestDto TransactionRequestDto) {
 
         Account account= accountRepository.findById(TransactionRequestDto.accountId())
-                        .orElseThrow(() -> new AccountNotFoundException("Account " + TransactionRequestDto.accountId() + " not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account " + TransactionRequestDto.accountId() + " not found"));
 
         if("withdraw".equalsIgnoreCase(TransactionRequestDto.action())){
             if(account.getBalance() < TransactionRequestDto.amount()){
