@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { AccountStore } from '../services/account-store.service';
 })
 export class LoginComponent {
   errorMessage: string | null = null;
-  loading = false;
+  loading = signal(false);
   form!: FormGroup;
 
   constructor(
@@ -51,42 +51,44 @@ export class LoginComponent {
     }
 
     const { username, password } = this.form.value;
-    this.loading = true;
+    this.loading.set(true);
     // Quick client-side admin shortcut: hardcoded admin credentials
-    if (username === 'admin' && password === 'admin*123') {
-      // set a mock token for admin so other parts of app consider user authenticated
-      this.auth.mockLogin(username as string, password as string).subscribe(() => {
-        this.loading = false;
-        this.router.navigate(['/admin-ai']);
-      });
-      return;
-    }
+    // if (username === 'admin' && password === 'admin*123') {
+    //   // set a mock token for admin so other parts of app consider user authenticated
+    //   this.auth.mockLogin(username as string, password as string).subscribe(() => {
+    //     this.loading = false;
+    //     this.router.navigate(['/admin-ai']);
+    //   });
+    //   return;
+    // }
 
-    // Try real backend; if it errors (e.g., 404 during dev), fallback to mockLogin
     this.auth.login(username as string, password as string).subscribe({
-      next: () => {
-        // After login, fetch account details and store globally
-        this.accountService.getMyAccount().subscribe((acc) => {
-          this.accountStore.setAccount(acc);
-          this.loading = false;
+      next: (res) => {
+        // // After login, fetch account details and store globally
+        // this.accountService.getMyAccount().subscribe((acc) => {
+        //   this.accountStore.setAccount(acc);
+        //   this.loading = false;
+        //   this.router.navigate(['/dashboard']);
+        // }, () => {
+        //   this.loading = false;
+        //   this.router.navigate(['/dashboard']);
+        // });
+        this.loading.set(false);
+        if (res.ok) {
+          this.accountStore.setAccount(res.body);
           this.router.navigate(['/dashboard']);
-        }, () => {
-          this.loading = false;
-          this.router.navigate(['/dashboard']);
-        });
+        }
+        else {
+          alert("Login Failed!");
+        }
+        this.form.reset();
       },
-      error: () => {
-        // Fallback to mock login so frontend development can continue
-        this.auth.mockLogin(username as string, password as string).subscribe(() => {
-          this.accountService.getMyAccount().subscribe((acc) => {
-            this.accountStore.setAccount(acc);
-            this.loading = false;
-            this.router.navigate(['/dashboard']);
-          }, () => {
-            this.loading = false;
-            this.router.navigate(['/dashboard']);
-          });
-        });
+      error: (err) => {
+        this.loading.set(false);
+        console.log(err);
+        console.log(this.loading());
+        alert("Login error!");
+        this.form.reset();
       }
     });
   }

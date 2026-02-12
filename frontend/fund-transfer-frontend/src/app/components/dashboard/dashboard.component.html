@@ -1,10 +1,12 @@
 <div class="card-wrapper">
-  <div class="greeting">Good Morning,<br /><span class="user-name">{{ account?.holder_name || 'User' }}</span>
+  <div class="greeting">Good Morning,<br /><span class="user-name">{{ (accountStore.getAccount())?.holderName ||
+      'User' }}</span>
 
     <div class="balance-card">
       <div class="balance-label">Available Balance</div>
-      <div class="balance-amount">₹ {{ (balance || 0) | number:'1.2-2' }}</div>
-      <div class="account-number">Account: {{ account?.accountNumber || 'XXXX-XXXX-1234' }}</div>
+      <div class="balance-amount">₹ {{ (accountStore.getAccount())?.balance || 0 | number:'1.2-2' }}</div>
+      <div class="account-number">Account: {{ (accountStore.getAccount())?.id || 'XXXX-XXXX-1234' }}
+      </div>
     </div>
 
     <div class="grid-actions">

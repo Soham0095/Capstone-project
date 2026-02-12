@@ -1,30 +1,21 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { Account } from '../../models/account-model';
 
-export interface Account {
-  id?: string;
-  holder_name: string;
-  accountNumber?: string;
-  availableBalance?: number;
-  balance?: number;
-  status?: string;
-  version?: number;
-}
+
 
 @Injectable({ providedIn: 'root' })
 export class AccountStore {
-  private accountSubject = new BehaviorSubject<Account | null>(null);
-  account$: Observable<Account | null> = this.accountSubject.asObservable();
+  account = signal<Account | null>(null);
 
   setAccount(account: Account) {
-    this.accountSubject.next(account);
+    this.account.set(account);
   }
 
   getAccount(): Account | null {
-    return this.accountSubject.getValue();
+    return this.account();
   }
 
   clear() {
-    this.accountSubject.next(null);
+    this.account.set(null);
   }
 }

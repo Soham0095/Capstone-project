@@ -2,19 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Account } from './account-store.service';
 import { AuthService } from './auth.service';
 import { SignupRequest, ApiResponse } from '../../models/create-account-request';
+import { Account } from '../../models/account-model';
+
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   // Backend API endpoints
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = 'http://localhost:8090';
   private meUrl = `${this.baseUrl}/api/accounts/me`;
   private balanceUrl = (accountId: string) => `${this.baseUrl}/api/accounts/${accountId}/balance`;
   private signupUrl = `${this.baseUrl}/newAccount`;
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   getMyAccount(): Observable<Account> {
     const headers = this.auth.getToken()
@@ -25,10 +26,12 @@ export class AccountService {
       catchError(() => {
         // mock details to simple displaay for now
         const mock: Account = {
-          id: 'mock-1',
-          holder_name: 'John Smith',
-          accountNumber: 'XXXX-XXXX-1234',
-          availableBalance: 45250.0
+          id: -1,
+          holderName: 'John Smith',
+          username: 'John Smith',
+          balance: 45250.0,
+          status: 'ACTIVE',
+          version: 0
         };
         return of(mock);
       })
@@ -45,13 +48,13 @@ export class AccountService {
       catchError(() => of(0))
     );
   }
-signup(data: SignupRequest): Observable<ApiResponse> {
-  return this.http.post<ApiResponse>(this.signupUrl, data).pipe(
-    catchError((error) => {
-      console.error('Signup error:', error);
-      throw error;
-    })
-  );
-}
+  signup(data: SignupRequest): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(this.signupUrl, data).pipe(
+      catchError((error) => {
+        console.error('Signup error:', error);
+        throw error;
+      })
+    );
+  }
 
 }

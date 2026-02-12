@@ -59,7 +59,6 @@ export class SignupComponent {
         this.loading = false;
         // Response is ApiResponse object with message property
         this.successMessage = response?.message || 'Account created successfully!';
-        
         // Give more time to display the modal before redirecting
         setTimeout(() => {
           this.router.navigate(['/']);

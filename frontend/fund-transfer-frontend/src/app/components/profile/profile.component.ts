@@ -1,20 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AccountStore, Account } from '../services/account-store.service';
+import { AccountStore } from '../services/account-store.service';
+import { GoBackDirective } from '../../directives/go-back-directive';
+
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, GoBackDirective],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
-  account: Account | null = null;
-
-  constructor(private accountStore: AccountStore) {}
-
-  ngOnInit(): void {
-    this.account = this.accountStore.getAccount();
-  }
+export class ProfileComponent {
+  accountStore = inject(AccountStore);
 }
