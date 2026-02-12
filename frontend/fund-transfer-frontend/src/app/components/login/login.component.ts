@@ -53,26 +53,26 @@ export class LoginComponent {
     const { username, password } = this.form.value;
     this.loading.set(true);
     // Quick client-side admin shortcut: hardcoded admin credentials
-    // if (username === 'admin' && password === 'admin*123') {
-    //   // set a mock token for admin so other parts of app consider user authenticated
-    //   this.auth.mockLogin(username as string, password as string).subscribe(() => {
-    //     this.loading = false;
-    //     this.router.navigate(['/admin-ai']);
-    //   });
-    //   return;
-    // }
+    if (username === 'admin' && password === 'admin*123') {
+      // set a mock token for admin so other parts of app consider user authenticated
+      this.auth.login(username as string, password as string).subscribe(() => {
+        this.loading.set(false);
+        this.router.navigate(['/admin-ai']);
+      });
+      return;
+    }
 
     this.auth.login(username as string, password as string).subscribe({
       next: (res) => {
         // // After login, fetch account details and store globally
-        // this.accountService.getMyAccount().subscribe((acc) => {
-        //   this.accountStore.setAccount(acc);
-        //   this.loading = false;
-        //   this.router.navigate(['/dashboard']);
-        // }, () => {
-        //   this.loading = false;
-        //   this.router.navigate(['/dashboard']);
-        // });
+        this.accountService.getMyAccount().subscribe((acc) => {
+          this.accountStore.setAccount(acc);
+          this.loading.set(false);
+          this.router.navigate(['/dashboard']);
+        }, () => {
+          this.loading.set(false);
+          this.router.navigate(['/dashboard']);
+        });
         this.loading.set(false);
         if (res.ok) {
           this.accountStore.setAccount(res.body);
