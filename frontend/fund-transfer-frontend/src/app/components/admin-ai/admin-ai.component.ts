@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, ApplicationRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminAiService } from '../services/admin-ai.service';
@@ -15,9 +15,18 @@ export class AdminAiComponent {
   loading = false;
   result: any = null;
   columns: string[] = [];
-  Array = Array; // Expose Array to template for Array.isArray()
+  Array = Array;
+  errorMessage: string | null = null;
+  queryRan = false;
+  showResult = false;
 
-  constructor(private fb: FormBuilder, private ai: AdminAiService) {
+  constructor(
+    private fb: FormBuilder,
+    private ai: AdminAiService,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+    private appRef: ApplicationRef
+  ) {
     this.form = this.fb.group({
       query: ['', [Validators.required]]
     });
@@ -28,24 +37,79 @@ export class AdminAiComponent {
       this.form.markAllAsTouched();
       return;
     }
+
     this.loading = true;
     this.result = null;
     this.columns = [];
+    this.errorMessage = null;
+    this.queryRan = false;
+    this.showResult = false;
+
     const q = this.form.value.query;
+    console.log('Sending query:', q);
+
     this.ai.sendQuery(q).subscribe({
-      next: (res) => {
-        this.result = res;
-        if (Array.isArray(res) && res.length > 0 && typeof res[0] === 'object') {
-          this.columns = Object.keys(res[0]);
-        } else if (res && typeof res === 'object') {
-          this.columns = Object.keys(res);
-        }
-        this.loading = false;
+      next: (res: any) => {
+        // ensure changes run inside Angular zone
+        this.ngZone.run(() => {
+          console.log('Response received:', res);
+          this.result = res;
+
+          if (Array.isArray(res) && res.length > 0 && typeof res[0] === 'object') {
+            this.columns = Object.keys(res[0]);
+          } else if (res && typeof res === 'object' && !Array.isArray(res)) {
+            this.columns = Object.keys(res);
+          }
+
+          this.loading = false;
+          this.queryRan = true;
+
+          // trigger change detection immediately and as a fallback schedule
+          this.cdr.detectChanges();
+          setTimeout(() => {
+            try { this.cdr.detectChanges(); } catch (e) { }
+            try { this.appRef.tick(); } catch (e) { }
+          }, 0);
+        });
       },
-      error: () => {
-        this.loading = false;
-        this.result = { error: 'Failed to fetch response from AI service' };
+      error: (err: any) => {
+        this.ngZone.run(() => {
+          console.error('Error details:', err);
+          this.loading = false;
+          this.queryRan = false;
+
+          let errorMsg = 'Failed to fetch response from AI service';
+          if (err?.name === 'TimeoutError') {
+            errorMsg = 'Request timed out. The backend might be slow or not responding.';
+          } else if (err?.status === 0) {
+            errorMsg = 'CORS error or backend server not running at localhost:8090. Check console for details.';
+          } else if (err?.status === 404) {
+            errorMsg = 'Backend endpoint not found. Ensure /chat endpoint exists.';
+          } else if (err?.status === 400) {
+            errorMsg = 'Bad request. ' + (err.error?.message || 'Check the query format.');
+          } else if (err?.status >= 500) {
+            errorMsg = 'Backend server error: ' + (err.error?.message || err.message || 'Unknown server error');
+          } else if (err?.message) {
+            errorMsg = err.message;
+          }
+
+          this.errorMessage = errorMsg;
+          this.result = { error: errorMsg };
+
+          this.cdr.detectChanges();
+          setTimeout(() => {
+            try { this.cdr.detectChanges(); } catch (e) { }
+            try { this.appRef.tick(); } catch (e) { }
+          }, 0);
+        });
       }
     });
   }
+
+  displayResult(): void {
+    this.showResult = true;
+    this.cdr.detectChanges();
+    setTimeout(() => { try { this.appRef.tick(); } catch (e) { } }, 0);
+  }
+
 }

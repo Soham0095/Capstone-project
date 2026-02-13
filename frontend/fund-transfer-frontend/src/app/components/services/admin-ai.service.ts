@@ -1,20 +1,26 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, timeout, catchError, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AdminAiService {
+  private apiUrl = 'http://localhost:8090/chat';
+
   constructor(private http: HttpClient) {}
 
   sendQuery(query: string): Observable<any> {
-    // TODO: Wire to backend Llama endpoint, e.g. POST /api/admin/ai/query
-    // return this.http.post('/api/admin/ai/query', { query });
-
-    // Mock response for now (array of objects example)
-    const mock = [
-      { accountId: 101, name: 'Alice Johnson', balance: 0 },
-      { accountId: 203, name: 'Bob Smith', balance: 0 }
-    ];
-    return of(mock);
+    const headers = new HttpHeaders({
+      'Content-Type': 'text/plain'
+    });
+    console.log('Making request to:', this.apiUrl);
+    console.log('Headers:', headers.getAll('Content-Type'));
+    
+    return this.http.post<any>(this.apiUrl, query, { headers }).pipe(
+      timeout(30000), // 30 second timeout
+      catchError(error => {
+        console.error('Service error:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }
