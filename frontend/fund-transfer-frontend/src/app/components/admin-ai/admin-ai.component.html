@@ -11,8 +11,9 @@
     <button type="submit" [disabled]="loading" class="run-btn">
       {{ loading ? 'Running Query...' : 'Run Query' }}
     </button>
-    
-    <button *ngIf="queryRan && !loading" type="button" (click)="displayResult()" class="display-btn">Display Result</button>
+
+    <button *ngIf="queryRan && !loading" type="button" (click)="displayResult()" class="display-btn">Display
+      Result</button>
   </div>
 </form>
 
@@ -25,35 +26,44 @@
 <div class="result-area" *ngIf="showResult && result !== null && !errorMessage">
   <h3 class="result-header">Response</h3>
 
-  <!-- If array of objects, render as table -->
-  <table *ngIf="Array.isArray(result) && result.length > 0 && columns.length > 0" class="result-table">
-    <thead>
-      <tr>
-        <th *ngFor="let c of columns">{{ c }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let row of result">
-        <td *ngFor="let c of columns">{{ row[c] }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-container">
+    <!-- If array of objects, render as table -->
+    <table *ngIf="Array.isArray(result) && result.length > 0 && columns.length > 0" class="result-table">
+      <thead>
+        <tr>
+          <th *ngFor="let c of columns">{{ c }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of result">
+          <td *ngFor="let c of columns">{{ row[c] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <!-- If object (not array), show key/value table -->
-  <table *ngIf="!Array.isArray(result) && columns.length > 0" class="result-table">
-    <thead>
-      <tr><th>Key</th><th>Value</th></tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let k of columns">
-        <td>{{ k }}</td>
-        <td>{{ result[k] }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-container">
+    <!-- If object (not array), show key/value table -->
+    <table *ngIf="!Array.isArray(result) && columns.length > 0" class="result-table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let k of columns">
+          <td>{{ k }}</td>
+          <td>{{ result[k] }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- Always show raw JSON as fallback -->
-  <div *ngIf="!(Array.isArray(result) && result.length > 0 && columns.length > 0) && !(!Array.isArray(result) && columns.length > 0)" class="json-fallback">
+  <div
+    *ngIf="!(Array.isArray(result) && result.length > 0 && columns.length > 0) && !(!Array.isArray(result) && columns.length > 0)"
+    class="json-fallback">
     <p><strong>Raw Response:</strong></p>
     <pre>{{ result | json }}</pre>
   </div>

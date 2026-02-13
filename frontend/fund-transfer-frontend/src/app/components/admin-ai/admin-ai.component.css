@@ -1,6 +1,11 @@
 :host {
   width: 100%;
   padding: 40px 32px;
+  display: block;
+}
+
+:host-context(.card) {
+  max-width: 800px !important;
 }
 
 .icon-circle {
@@ -150,23 +155,38 @@
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .result-header {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: #212121;
-  margin: 0 0 16px 0;
+  margin: 8px 0 16px 0;
+  border-bottom: 2px solid #ff9800;
+  padding-bottom: 8px;
+  display: inline-block;
+}
+
+.table-container {
+  max-height: 400px;
+  overflow: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 24px;
 }
 
 .result-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  overflow: hidden;
 }
 
 .result-table th {
@@ -177,6 +197,9 @@
   font-weight: 600;
   font-size: 13px;
   border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .result-table td {
@@ -193,6 +216,7 @@
 .result-table tbody tr:hover {
   background: #fafafa;
 }
+
 .json-fallback {
   margin-top: 16px;
   padding: 16px;

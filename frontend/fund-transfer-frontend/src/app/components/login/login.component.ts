@@ -21,6 +21,7 @@ export class LoginComponent {
   accountStore = inject(AccountStore)
   auth = inject(AuthService)
   messageService = inject(MessageService)
+  accountService = inject(AccountService);
 
   constructor(
     private fb: FormBuilder,
@@ -53,31 +54,17 @@ export class LoginComponent {
     const { username, password } = this.form.value;
     this.loading.set(true);
     // Quick client-side admin shortcut: hardcoded admin credentials
-    if (username === 'admin' && password === 'admin*123') {
-      // set a mock token for admin so other parts of app consider user authenticated
-      this.auth.login(username as string, password as string).subscribe(() => {
-        this.loading.set(false);
-        this.router.navigate(['/admin-ai']);
-      });
-      return;
-    }
+    let urlToNavigate: string;
+    if (username === 'admin' && password === 'admin*123') { urlToNavigate = '/admin-ai'; }
+    else { urlToNavigate = '/dashboard'; }
 
     this.auth.login(username as string, password as string).subscribe({
       next: (res) => {
-        // // After login, fetch account details and store globally
-        this.accountService.getMyAccount().subscribe((acc) => {
-          this.accountStore.setAccount(acc);
-          this.loading.set(false);
-          this.router.navigate(['/dashboard']);
-        }, () => {
-          this.loading.set(false);
-          this.router.navigate(['/dashboard']);
-        });
         this.loading.set(false);
         if (res.ok) {
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Successfully logged in' });
           this.accountStore.setAccount(res.body);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate([urlToNavigate]);
         }
         else {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to login' });
