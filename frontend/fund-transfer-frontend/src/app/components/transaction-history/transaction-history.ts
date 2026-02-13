@@ -1,17 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { GoBackDirective } from '../../directives/go-back-directive';
 import { TransactionService } from '../services/transaction.service';
 import { AccountStore } from '../services/account-store.service';
 import { Transaction } from '../../models/transaction-model';
+import { Footer } from '../footer/footer';
 
 
 
 @Component({
   selector: 'app-transaction-history',
   standalone: true,
-  imports: [CommonModule, RouterLink, GoBackDirective],
+  imports: [CommonModule, RouterLink, GoBackDirective, Footer],
   templateUrl: './transaction-history.html',
   styleUrl: './transaction-history.css',
 })
@@ -105,7 +106,7 @@ export class TransactionHistory {
 
   ngOnInit() {
     this.transactionService.getTransactions(this.accountStore.getAccount()!.id).subscribe((transactions: Transaction[]) => {
-      this.transactions.set(transactions);
+      this.transactions.set(transactions.reverse());
     });
   }
 

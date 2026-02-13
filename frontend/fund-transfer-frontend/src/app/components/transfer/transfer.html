@@ -5,13 +5,14 @@
     <h2>Transfer Money</h2>
 </div>
 
-<div class="card-body">
+<form class="card-body" [formGroup]="form" (ngSubmit)="onClickTransfer()">
     <!-- Sender Info -->
     <div class="sender-info">
-        <div class="avatar">JS</div>
+        <div class="avatar">{{accountStore.getAccount()?.holderName?.slice(0, 2)}}</div>
         <div class="sender-details">
-            <p class="sender-name"><strong>From: John Smith</strong></p>
-            <p class="sender-meta">Account: XXXX-1234 • Bal: ₹45,250</p>
+            <p class="sender-name"><strong>From: {{accountStore.getAccount()?.holderName}}</strong></p>
+            <p class="sender-meta">Account: {{accountStore.getAccount()?.id}} • Bal:
+                ₹{{accountStore.getAccount()?.balance}}</p>
         </div>
     </div>
 
@@ -23,7 +24,15 @@
     <!-- To Account Input -->
     <div class="form-group">
         <label for="toAccount">To Account Number</label>
-        <input type="text" id="toAccount" class="form-control" placeholder="Enter destination account ID">
+        <input type="text" id="toAccount" class="form-control" formControlName="toAccount"
+            placeholder="Enter destination account ID"
+            [ngClass]="{ 'is-invalid': (submitted() || f['toAccount']?.touched) && f['toAccount']?.invalid }">
+        <div *ngIf="(submitted() || f['toAccount']?.touched) && f['toAccount']?.invalid" class="invalid-feedback">
+            <div *ngIf="f['toAccount']?.hasError('required')" style="color: rgb(255, 92, 92); font-size: smaller;">To
+                Account Number is required</div>
+            <div *ngIf="f['toAccount']?.hasError('pattern')" style="color: rgb(255, 92, 92); font-size: smaller;">To
+                Account Number must be a valid number</div>
+        </div>
     </div>
 
     <!-- Amount Input -->
@@ -31,19 +40,34 @@
         <label for="amount">Amount</label>
         <div class="input-wrapper">
             <span class="currency-symbol">₹</span>
-            <input type="text" id="amount" class="form-control amount-input" value="500.00">
+            <input type="text" id="amount" class="form-control amount-input" formControlName="amount" placeholder="0.00"
+                [ngClass]="{ 'is-invalid': (submitted() || f['amount']?.touched) && f['amount']?.invalid }">
+        </div>
+        <div *ngIf="(submitted() || f['amount']?.touched) && f['amount']?.invalid" class="invalid-feedback">
+            <div *ngIf="f['amount']?.hasError('required')" style="color: rgb(255, 92, 92); font-size: smaller;">Amount
+                is required</div>
+            <div *ngIf="f['amount']?.hasError('pattern')" style="color: rgb(255, 92, 92); font-size: smaller;">Amount
+                must be a valid number</div>
+            <div *ngIf="f['amount']?.hasError('min')" style="color: rgb(255, 92, 92); font-size: smaller;">Amount must
+                be greater than 0</div>
         </div>
     </div>
 
-    <!-- Remarks Input -->
+    <!-- Remarks Input
     <div class="form-group">
         <label for="remarks">Remarks (Optional)</label>
         <input type="text" id="remarks" class="form-control" placeholder="Add a note">
-    </div>
+    </div> -->
 
     <!-- Action Buttons -->
     <div class="actions">
-        <button class="btn btn-primary">Transfer Now</button>
-        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-primary" type="submit" [disabled]="isLoading()">
+            <span *ngIf="isLoading()" class="spinner-border spinner-border-sm mr-1"></span>
+            {{ isLoading() ? 'Processing...' : 'Transfer Now' }}
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="onClickCancel()"
+            [disabled]="isLoading()">Cancel</button>
     </div>
-</div>
+
+    <app-footer></app-footer>
+</form>

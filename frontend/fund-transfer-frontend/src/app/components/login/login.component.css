@@ -79,15 +79,7 @@
   margin-bottom: 8px;
 }
 
-.login-form .alert {
-  background: #ffebee;
-  color: #c62828;
-  padding: 12px 14px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  border-left: 4px solid #d32f2f;
-}
+
 
 .login-form button {
   width: 100%;

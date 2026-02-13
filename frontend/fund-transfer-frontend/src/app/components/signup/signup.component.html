@@ -20,22 +20,10 @@
       <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
     </div>
 
-    <div *ngIf="errorMessage" class="alert">{{ errorMessage }}</div>
-
     <button type="submit" [disabled]="loading">{{ loading ? 'Creating Account...' : 'Sign Up' }}</button>
   </form>
 
   <div class="forgot-password">
     <a href="javascript:void(0)" (click)="goToLogin()">Already have an account? Login here</a>
-  </div>
-</div>
-
-<!-- Success Popup Modal -->
-<div class="modal-overlay" *ngIf="successMessage">
-  <div class="modal-content">
-    <div class="modal-icon">✓</div>
-    <h2 class="modal-title">Sign Up Successful!</h2>
-    <p class="modal-text">{{ successMessage }}</p>
-    <p class="modal-redirect">Redirecting to login in 2 seconds...</p>
   </div>
 </div>

@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { AccountService } from '../services/account.service';
 import { AccountStore } from '../services/account-store.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
@@ -14,15 +15,15 @@ import { AccountStore } from '../services/account-store.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  errorMessage: string | null = null;
   loading = signal(false);
   form!: FormGroup;
 
+  accountStore = inject(AccountStore)
+  auth = inject(AuthService)
+  messageService = inject(MessageService)
+
   constructor(
     private fb: FormBuilder,
-    private auth: AuthService,
-    private accountService: AccountService,
-    private accountStore: AccountStore,
     private router: Router
   ) {
     this.form = this.fb.group({
@@ -44,7 +45,6 @@ export class LoginComponent {
   }
 
   submit(): void {
-    this.errorMessage = null;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -56,7 +56,7 @@ export class LoginComponent {
     // if (username === 'admin' && password === 'admin*123') {
     //   // set a mock token for admin so other parts of app consider user authenticated
     //   this.auth.mockLogin(username as string, password as string).subscribe(() => {
-    //     this.loading = false;
+    //     this.loading.set(false);
     //     this.router.navigate(['/admin-ai']);
     //   });
     //   return;
@@ -75,11 +75,12 @@ export class LoginComponent {
         // });
         this.loading.set(false);
         if (res.ok) {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Successfully logged in' });
           this.accountStore.setAccount(res.body);
           this.router.navigate(['/dashboard']);
         }
         else {
-          alert("Login Failed!");
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to login' });
         }
         this.form.reset();
       },
@@ -87,7 +88,7 @@ export class LoginComponent {
         this.loading.set(false);
         console.log(err);
         console.log(this.loading());
-        alert("Login error!");
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: `${err.error.message}` });
         this.form.reset();
       }
     });

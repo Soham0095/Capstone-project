@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
 import { SignupRequest, ApiResponse } from '../../models/create-account-request';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-signup',
@@ -15,8 +16,8 @@ import { SignupRequest, ApiResponse } from '../../models/create-account-request'
 export class SignupComponent {
   form!: FormGroup;
   loading = false;
-  errorMessage: string | null = null;
-  successMessage: string | null = null;
+
+  messageService = inject(MessageService);
 
   constructor(
     private fb: FormBuilder,
@@ -43,9 +44,6 @@ export class SignupComponent {
   }
 
   submit(): void {
-    this.errorMessage = null;
-    this.successMessage = null;
-
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -58,15 +56,15 @@ export class SignupComponent {
       next: (response: ApiResponse) => {
         this.loading = false;
         // Response is ApiResponse object with message property
-        this.successMessage = response?.message || 'Account created successfully!';
+        const msg = response?.message || 'Account created successfully!';
         // Give more time to display the modal before redirecting
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 3000);
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: msg });
+        this.router.navigate(['/']);
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error?.error?.message || error?.error || 'Failed to create account. Please try again.';
+        const errorMsg = error?.error?.message || error?.error || 'Failed to create account. Please try again.';
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: errorMsg });
       }
     });
   }

@@ -7,12 +7,14 @@ import { SignupComponent } from './components/signup/signup.component';
 import { Transfer } from './components/transfer/transfer';
 import { AdminAiComponent } from './components/admin-ai/admin-ai.component';
 
+import { authGuard } from './guards/auth-guard';
+
 export const routes: Routes = [
-	{ path: '', component: LoginComponent },
-	{ path: 'signup', component: SignupComponent },
-	{ path: 'dashboard', component: DashboardComponent },
-	{ path: 'transaction-history', component: TransactionHistory },
-	{ path: 'transfer', component: Transfer },
-	{ path: 'admin-ai', component: AdminAiComponent },
-	{ path: 'profile', component: ProfileComponent }
+	{ path: '', component: LoginComponent, canActivate: [authGuard] },
+	{ path: 'signup', component: SignupComponent, canActivate: [authGuard] },
+	{ path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+	{ path: 'transaction-history', component: TransactionHistory, canActivate: [authGuard] },
+	{ path: 'transfer', component: Transfer, canActivate: [authGuard] },
+	{ path: 'admin-ai', component: AdminAiComponent, canActivate: [authGuard] },
+	{ path: 'profile', component: ProfileComponent, canActivate: [authGuard] }
 ];

@@ -1,17 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { AccountStore } from '../services/account-store.service';
-import { Footer } from '../footer/footer';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, Footer],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  selector: 'app-footer',
+  imports: [],
+  templateUrl: './footer.html',
+  styleUrl: './footer.css',
 })
-export class DashboardComponent {
+export class Footer {
 
   accountStore = inject(AccountStore);
 
