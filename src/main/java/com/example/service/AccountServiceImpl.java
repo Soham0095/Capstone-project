@@ -6,6 +6,7 @@ import com.example.dto.LoginRequestDto;
 import com.example.dto.LoginResponseDto;
 import com.example.dto.TransactionRequestDto;
 import com.example.entity.Account;
+import com.example.exception.AccountAlreadyExistsException;
 import com.example.exception.AccountNotFoundException;
 import com.example.exception.InsufficientBalanceException;
 import com.example.repository.AccountRepository;
@@ -20,6 +21,10 @@ public class AccountServiceImpl implements AccountService{
     private AccountRepository accountRepository;
 
     public void createAccount(CreateAccountRequest request){
+        //handle duplicate username
+        if (accountRepository.findByUsername(request.username()).isPresent()) {
+            throw new AccountAlreadyExistsException("Account with username " + request.username() + " already exists");
+        }
         Account account = new Account();
 //        account.setId(request.id());
         account.setHolderName(request.holderName());

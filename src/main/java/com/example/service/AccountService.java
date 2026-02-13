@@ -5,12 +5,13 @@ import com.example.dto.LoginRequestDto;
 import com.example.dto.LoginResponseDto;
 import com.example.dto.TransactionRequestDto;
 import com.example.entity.Account;
+import com.example.exception.AccountAlreadyExistsException;
 import com.example.exception.AccountNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 
 public interface AccountService {
-    void createAccount(CreateAccountRequest request);
+    void createAccount(CreateAccountRequest request) throws AccountAlreadyExistsException;
 
     Account getAccountById(int id) throws AccountNotFoundException;
 
