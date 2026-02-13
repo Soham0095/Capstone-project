@@ -37,7 +37,7 @@ public class TransferServiceImpl implements TransferService{
 
             // sufficient balance?
         if (fromAccount.getBalance() < transferRequestDto.amount()){
-            throw new InsufficientBalanceException("Account " + transferRequestDto.toAccountId() + " has insufficient balance");
+            throw new InsufficientBalanceException("Insufficient balance, Your Current balance is: Rs." + fromAccount.getBalance());
         }
 
         return true;
