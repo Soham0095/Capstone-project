@@ -1,4 +1,9 @@
 <div class="card-wrapper">
+  <!-- Toast Notification -->
+  <div *ngIf="showToast" class="toast" [ngClass]="toastType">
+    {{ toastMessage }}
+  </div>
+
   <div class="greeting">Good Morning,<br /><span class="user-name">{{ (accountStore.getAccount())?.holderName ||
       'User' }}</span>
 
@@ -18,14 +23,48 @@
         <div class="icon">📜</div>
         <div class="label">History</div>
       </div>
-      <div class="action" (click)="navigateTo('/profile')">
-        <div class="icon">👤</div>
-        <div class="label">Profile</div>
+      <div class="action" (click)="openDepositModal()">
+        <div class="icon">💰</div>
+        <div class="label">Deposit</div>
       </div>
-      <div class="action" (click)="logout()">
-        <div class="icon">🔒</div>
-        <div class="label">Logout</div>
+      <div class="action" (click)="openWithdrawModal()">
+        <div class="icon">💳</div>
+        <div class="label">Withdraw</div>
       </div>
     </div>
+
+    <!-- Modal Overlay -->
+    <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ currentAction === 'DEPOSIT' ? 'Deposit Amount' : 'Withdraw Amount' }}</h2>
+          <button class="close-btn" (click)="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Enter Amount (₹)</label>
+            <input 
+              type="number" 
+              placeholder="0" 
+              [(ngModel)]="transactionAmount"
+              class="amount-input"
+              min="1"
+            />
+          </div>
+          <div *ngIf="currentAction === 'WITHDRAW'" class="balance-info">
+            Current Balance: ₹{{ (accountStore.getAccount())?.balance || 0 | number:'1.2-2' }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-cancel" (click)="closeModal()" [disabled]="isSubmitting">Cancel</button>
+          <button type="button" class="btn btn-submit" (click)="submitTransaction()" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Processing...' : (currentAction === 'DEPOSIT' ? 'Deposit' : 'Withdraw') }}
+          </button>
+        </div>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+      </div>
+    </div>
+
     <app-footer></app-footer>
   </div>

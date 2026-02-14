@@ -14,6 +14,7 @@ export class AccountService {
   private meUrl = `${this.baseUrl}/api/accounts/me`;
   private balanceUrl = (accountId: string) => `${this.baseUrl}/api/accounts/${accountId}/balance`;
   private signupUrl = `${this.baseUrl}/newAccount`;
+  private updateBalanceUrl = `${this.baseUrl}/accounts/updateBalance`;
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 
@@ -52,6 +53,28 @@ export class AccountService {
     return this.http.post<ApiResponse>(this.signupUrl, data).pipe(
       catchError((error) => {
         console.error('Signup error:', error);
+        throw error;
+      })
+    );
+  }
+
+  updateBalance(accountId: number, amount: number, action: string): Observable<any> {
+    const headers = this.auth.getToken()
+      ? new HttpHeaders({ Authorization: `Bearer ${this.auth.getToken()}` })
+      : undefined;
+
+    const transactionRequest = {
+      accountId: accountId,
+      amount: amount,
+      action: action
+    };
+
+    return this.http.patch<any>(this.updateBalanceUrl, transactionRequest, { 
+      headers: headers ? headers : undefined,
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError((error) => {
+        console.error('Update balance error:', error);
         throw error;
       })
     );
