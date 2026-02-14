@@ -1,7 +1,9 @@
-import { Component, ChangeDetectorRef, NgZone, ApplicationRef } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, ApplicationRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AdminAiService } from '../services/admin-ai.service';
+import { AccountStore } from '../services/account-store.service';
 
 @Component({
   selector: 'app-admin-ai',
@@ -20,6 +22,9 @@ export class AdminAiComponent {
   queryRan = false;
   showResult = false;
 
+  private router = inject(Router);
+  private accountStore = inject(AccountStore);
+
   constructor(
     private fb: FormBuilder,
     private ai: AdminAiService,
@@ -30,6 +35,11 @@ export class AdminAiComponent {
     this.form = this.fb.group({
       query: ['', [Validators.required]]
     });
+  }
+
+  logout(): void {
+    this.accountStore.clear();
+    this.router.navigate(['/']);
   }
 
   submit(): void {
@@ -63,6 +73,7 @@ export class AdminAiComponent {
 
           this.loading = false;
           this.queryRan = true;
+          this.showResult = true;
 
           // trigger change detection immediately and as a fallback schedule
           this.cdr.detectChanges();
@@ -106,10 +117,6 @@ export class AdminAiComponent {
     });
   }
 
-  displayResult(): void {
-    this.showResult = true;
-    this.cdr.detectChanges();
-    setTimeout(() => { try { this.appRef.tick(); } catch (e) { } }, 0);
-  }
+  
 
 }

@@ -1,6 +1,7 @@
 <div class="icon-circle"></div>
 <div class="card-header">
   <h2>Admin Console</h2>
+  <button class="logout-btn" (click)="logout()">Logout</button>
 </div>
 
 <form [formGroup]="form" (ngSubmit)="submit()" class="query-form">
@@ -12,8 +13,7 @@
       {{ loading ? 'Running Query...' : 'Run Query' }}
     </button>
 
-    <button *ngIf="queryRan && !loading" type="button" (click)="displayResult()" class="display-btn">Display
-      Result</button>
+    
   </div>
 </form>
 
@@ -23,6 +23,8 @@
 </div>
 
 <!-- Results appear only when Display Result is clicked -->
+ <!--<div class="result-area" *ngIf="result !== null && !errorMessage">-->
+
 <div class="result-area" *ngIf="showResult && result !== null && !errorMessage">
   <h3 class="result-header">Response</h3>
 
@@ -42,6 +44,9 @@
     </table>
   </div>
 
+  <div *ngIf="Array.isArray(result) && result.length === 0" class="no-result">
+    <p>Sorry, I don't find a suitable response.</p>
+  </div>
   <div class="table-container">
     <!-- If object (not array), show key/value table -->
     <table *ngIf="!Array.isArray(result) && columns.length > 0" class="result-table">
@@ -62,8 +67,13 @@
 
   <!-- Always show raw JSON as fallback -->
   <div
-    *ngIf="!(Array.isArray(result) && result.length > 0 && columns.length > 0) && !(!Array.isArray(result) && columns.length > 0)"
-    class="json-fallback">
+  *ngIf="
+    !(Array.isArray(result) && result.length > 0 && columns.length > 0)
+    && !(!Array.isArray(result) && columns.length > 0)
+    && !(Array.isArray(result) && result.length === 0)
+  "
+  class="json-fallback">
+
     <p><strong>Raw Response:</strong></p>
     <pre>{{ result | json }}</pre>
   </div>
