@@ -125,6 +125,7 @@ export class TransactionHistory {
 
   setFilter(filter: 'All' | 'Sent' | 'Received') {
     this.filter.set(filter);
+    
   }
 
 }

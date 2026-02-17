@@ -56,26 +56,36 @@ export class Transfer {
         amount: parseInt(this.form.value.amount!),
       })
       .subscribe({
-        next: (response) => {
-          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Transfer successful!' });
-          this.isLoading.set(false);
-          this.form.reset();
-          this.form.markAsPristine();
-          this.form.markAsUntouched();
-          this.submitted.set(false);
-          //fetch the account details
-          this.accountStore.fetchAccountDetails();
-          this.router.navigate(['/dashboard']);
-        },
-        error: (error) => {
-          this.isLoading.set(false);
-          this.form.reset();
-          this.form.markAsPristine();
-          this.form.markAsUntouched();
-          this.submitted.set(false);
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: `Error: ${error.error.message}` });
-        }
-      });
+  next: (response: any) => {
+    this.isLoading.set(false);
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: response?.message || 'Transfer successful'
+    });
+
+    this.accountStore.fetchAccountDetails();
+    this.router.navigate(['/dashboard']);
+  },
+
+  error: (error) => {
+    this.isLoading.set(false);
+
+    const errorMessage =
+      error?.error?.message ||     // when backend sends { message: "..." }
+      error?.error?.error ||       // when Spring default error
+      error?.statusText ||         // fallback
+      'Transfer failed';
+
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: errorMessage
+    });
+  }
+});
+
   }
 
 }
