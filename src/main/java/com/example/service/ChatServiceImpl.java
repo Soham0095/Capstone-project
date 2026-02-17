@@ -38,6 +38,9 @@ public class ChatServiceImpl implements ChatService {
                                     - Do NOT include markdown, comments, or extra text
                                     - Output must start with SELECT
                                     - Output must end with a semicolon
+                                    - If the prompt is irrelevant to the application always produce "SELECT * FROM account WHERE holder_name = 'java' AND status = 'active';"
+                                    as the sql query. Example: who is the president of india? what is spring boot. for such irrelevant questions produce the above sql query
+                                   
 
                                     Think silently.
                                     Do not reveal reasoning.
@@ -66,6 +69,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<Map<String, Object>> getChatResponse(String userPrompt) {
         String sqlQuery = executeLLMQuery(userPrompt);
+        System.out.println("The produced sql query is : "+ sqlQuery);
         return executeSQLQuery(sqlQuery);
     }
 

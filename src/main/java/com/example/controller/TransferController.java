@@ -7,16 +7,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class TransferController {
    @Autowired
    private TransferService transferService;
     @PostMapping("/transfer")
-    public String transfer(@RequestBody TransferRequestDto transferRequestDto){
-        // transferService should take it up
-        System.out.println(transferRequestDto);
+    public Map<String, Object> transfer(@RequestBody TransferRequestDto transferRequestDto){
         transferService.transfer(transferRequestDto);
-        return "Valid Transfer";
+
+        return Map.of(
+                "success", true,
+                "message", "Transfer successful"
+        );
     }
+
 }
 //exce handling tested

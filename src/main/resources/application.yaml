@@ -10,7 +10,7 @@ spring:
 
   ai:
     openai:
-      api-key: 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
+      api-key: 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
       base-url: https://api.groq.com/openai
       chat:
         options:
