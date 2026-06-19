@@ -29,6 +29,11 @@
     </div>
 
     <div class="detail-row">
+      <span class="detail-label">Reward Points</span>
+      <span class="detail-value">⭐ {{ accountStore.getAccount()!.rewardPoints || 0 }}</span>
+    </div>
+
+    <div class="detail-row">
       <span class="detail-label">Version</span>
       <span class="detail-value">{{ accountStore.getAccount()!.version || '-' }}</span>
     </div>

@@ -14,6 +14,16 @@
       </div>
     </div>
 
+    <!-- Clickable Rewards Widget -->
+    <div class="rewards-card" (click)="navigateTo('/rewards')">
+      <div class="rewards-info">
+        <span class="rewards-icon">⭐</span>
+        <span class="rewards-title">Reward Points</span>
+      </div>
+      <div class="rewards-points">{{ (accountStore.getAccount())?.rewardPoints || 0 }} <span class="pts-lbl">pts</span></div>
+      <div class="rewards-arrow">→</div>
+    </div>
+
     <div class="grid-actions">
       <div class="action" (click)="navigateTo('/transfer')">
         <div class="icon"><i class="pi pi-send"></i></div>

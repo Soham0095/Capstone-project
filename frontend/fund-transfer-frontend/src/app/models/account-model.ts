@@ -5,4 +5,5 @@ export interface Account {
     balance: number;
     status: string;
     version?: number;
+    rewardPoints?: number;
 }

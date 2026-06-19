@@ -297,3 +297,82 @@
     opacity: 0;
   }
 }
+
+/* Rewards Card Widget */
+.rewards-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #fdfbf7 0%, #f5ecd9 100%);
+  border: 1px solid #e2d2b5;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+/* Make it look premium purple-indigo on hover */
+.rewards-card:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #7b1fa2 0%, #1976d2 100%);
+  border-color: #7b1fa2;
+  box-shadow: 0 4px 12px rgba(123, 31, 162, 0.2);
+}
+
+.rewards-card:hover .rewards-title,
+.rewards-card:hover .rewards-points,
+.rewards-card:hover .rewards-arrow {
+  color: white;
+}
+
+.rewards-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rewards-icon {
+  font-size: 20px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.rewards-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #b5892c;
+  transition: color 0.3s;
+}
+
+.rewards-points {
+  font-size: 18px;
+  font-weight: 700;
+  color: #8c620c;
+  margin-left: auto;
+  margin-right: 14px;
+  transition: color 0.3s;
+}
+
+.pts-lbl {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.rewards-arrow {
+  font-size: 16px;
+  font-weight: bold;
+  color: #b5892c;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.rewards-card:hover .rewards-arrow {
+  transform: translateX(4px);
+}

@@ -1,0 +1,82 @@
+<div class="rewards-wrapper">
+  <div class="header">
+    <button appGoBackDirective class="back-btn">←</button>
+    <h1>My Rewards</h1>
+  </div>
+
+  <div class="content" *ngIf="accountStore.getAccount(); else noAccount">
+    <!-- Loyalty Reward Card -->
+    <div class="loyalty-card">
+      <div class="card-inner">
+        <div class="card-logo">⭐</div>
+        <div class="card-title">Loyalty Points</div>
+        <div class="card-points">
+          <span class="points-val">{{ accountStore.getAccount()!.rewardPoints || 0 }}</span>
+          <span class="points-unit">pts</span>
+        </div>
+        <div class="card-footer">
+          Account ID: {{ accountStore.getAccount()!.id }}
+        </div>
+        <div class="card-actions">
+          <button class="redeem-btn" (click)="redeemAll()">Redeem All</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rules Section -->
+    <div class="info-card">
+      <div class="info-header">
+        <span class="info-icon">📋</span>
+        <h3>Reward Rules</h3>
+      </div>
+      <div class="info-body">
+        <ul>
+          <li>Earn <strong>1 point per ₹100</strong> transferred.</li>
+          <li>Points are rounded down (e.g., ₹250 yields 2 points).</li>
+          <li>Transaction must be successful and greater than ₹100.</li>
+          <li>Transfers to yourself or other accounts of the same user are not eligible.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Logs History -->
+    <div class="history-section">
+      <h2>Reward Activity</h2>
+
+      <div *ngIf="isLoading()" class="loading-state">
+        <i class="pi pi-spin pi-spinner"></i> Fetching your rewards...
+      </div>
+
+      <div *ngIf="errorMessage()" class="error-msg">
+        {{ errorMessage() }}
+      </div>
+
+      <div *ngIf="!isLoading() && !errorMessage()">
+        <div *ngIf="rewardLogs().length === 0" class="empty-state">
+          <div class="empty-icon">🎁</div>
+          <p>No rewards earned yet.</p>
+          <p class="empty-desc">Make a successful transfer of ₹100 or more to another user to earn loyalty points!</p>
+        </div>
+
+        <div class="reward-list" *ngIf="rewardLogs().length > 0">
+          <div class="reward-item" *ngFor="let log of rewardLogs()">
+            <div class="reward-badge-icon">🎉</div>
+            <div class="reward-details">
+              <div class="reward-desc-text">{{ log.description }}</div>
+              <div class="reward-date">{{ log.createdOn | date: "MMM d, y h:mma" }}</div>
+            </div>
+            <div class="reward-pts-add">+{{ log.points }} pts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noAccount>
+    <div class="empty-state">
+      <p>No account information available.</p>
+    </div>
+  </ng-template>
+
+  <app-footer></app-footer>
+</div>
