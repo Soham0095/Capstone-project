@@ -49,6 +49,12 @@ public class TransferServiceImpl implements TransferService{
     public void executeTransfer(TransferRequestDto transferRequestDto){
         Account fromAccount = accountService.getAccountById(transferRequestDto.fromAccountId());
         Account toAccount = accountService.getAccountById(transferRequestDto.toAccountId());
+
+        if (fromAccount.getId().equals(toAccount.getId())) {
+            // Self transfer: no balance changes or rewards needed
+            return;
+        }
+
         fromAccount.setBalance(fromAccount.getBalance() - transferRequestDto.amount());
         toAccount.setBalance(toAccount.getBalance() + transferRequestDto.amount());
         accountService.updateAccount(fromAccount);
@@ -57,6 +63,7 @@ public class TransferServiceImpl implements TransferService{
     }
 
     // main transfer func - AOP
+    @Transactional
     @Override
     public void transfer(TransferRequestDto transferRequestDto) {
 

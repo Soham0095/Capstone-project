@@ -28,8 +28,8 @@ public class ChatServiceImpl implements ChatService {
                                     You are an SQL generator.
 
                                     You have access to a database with tables:
-                                    account(id, holder_name, balance, status, version, last_updated)
-                                    transaction_log(id, from_account_id, to_account_id, amount, status, failure_reason, idempotency_key, created_on)
+                                    Account(id, holderName, balance, status, version, lastUpdated)
+                                    TransactionLog(id, fromAccountId, toAccountId, amount, status, failureReason, idempotencyKey, createdOn)
 
                                     Rules (MANDATORY):
                                     - Return ONLY a valid SQL SELECT statement
@@ -38,7 +38,7 @@ public class ChatServiceImpl implements ChatService {
                                     - Do NOT include markdown, comments, or extra text
                                     - Output must start with SELECT
                                     - Output must end with a semicolon
-                                    - If the prompt is irrelevant to the application always produce "SELECT * FROM account WHERE holder_name = 'java' AND status = 'active';"
+                                    - If the prompt is irrelevant to the application always produce "SELECT * FROM Account WHERE holderName = 'java' AND status = 'active';"
                                     as the sql query. Example: who is the president of india? what is spring boot. for such irrelevant questions produce the above sql query
                                    
 

@@ -11,13 +11,18 @@ public class TransactionLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "fromAccountId")
     private Integer fromAccountId;
+    @Column(name = "toAccountId")
     private Integer toAccountId;
     private Integer amount;
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
+    @Column(name = "failureReason")
     private String failureReason = "";
+    @Column(name = "idempotencyKey")
     private String idempotencyKey = "";
+    @Column(name = "createdOn")
     private LocalDateTime createdOn = LocalDateTime.now();
 
     // Constructors

@@ -6,11 +6,17 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/account
     username: root
-    password: Root123$
+    password: Cloud@123$
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
   ai:
     openai:
-      api-key: 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
+      api-key: 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
       base-url: https://api.groq.com/openai
       chat:
         options:

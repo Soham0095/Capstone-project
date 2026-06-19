@@ -21,14 +21,18 @@ public class Account {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "holderName")
     private String holderName;
     private Integer balance = 0;
     @Enumerated(EnumType.STRING)
     private AccountStatus status = AccountStatus.active;
     private Long version = 0L;
+    @Column(name = "lastUpdated")
     private LocalDateTime lastUpdated = LocalDateTime.now();
     private String username;
     private String password;
+    @Column(name = "rewardPoints")
+    private Integer rewardPoints = 0;
 
     // setter getter methods
 
@@ -94,6 +98,14 @@ public class Account {
     public void setpassword(String password) { this.password=password;}
     // This method is a placeholder for password hashing logic??
 
+    public Integer getRewardPoints() {
+        return rewardPoints;
+    }
+
+    public void setRewardPoints(Integer rewardPoints) {
+        this.rewardPoints = rewardPoints;
+    }
+
 
     @Override
     public String toString() {
@@ -106,6 +118,7 @@ public class Account {
                 ", lastUpdated=" + lastUpdated +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", rewardPoints=" + rewardPoints +
                 '}';
     }
 
