@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     })
     public ResponseEntity<LoginResponseDto> handleCustomExceptions(RuntimeException ex) {
-        LoginResponseDto errorBody = new LoginResponseDto(ex.getMessage(), false, null);
+        LoginResponseDto errorBody = new LoginResponseDto(ex.getMessage(), false, null, null);
         if (ex instanceof AccountNotFoundException){
             return new ResponseEntity<>(errorBody, HttpStatus.NOT_FOUND);
         }

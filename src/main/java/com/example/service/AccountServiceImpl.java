@@ -10,7 +10,9 @@ import com.example.exception.AccountAlreadyExistsException;
 import com.example.exception.AccountNotFoundException;
 import com.example.exception.InsufficientBalanceException;
 import com.example.repository.AccountRepository;
+import com.example.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountServiceImpl implements AccountService{
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public void createAccount(CreateAccountRequest request){
         //handle duplicate username
@@ -29,7 +37,7 @@ public class AccountServiceImpl implements AccountService{
 //        account.setId(request.id());
         account.setHolderName(request.holderName());
         account.setUsername(request.username());
-        account.setpassword(request.password());
+        account.setpassword(passwordEncoder.encode(request.password()));
         System.out.println(account);
         accountRepository.save(account);
     }
@@ -40,17 +48,31 @@ public class AccountServiceImpl implements AccountService{
                 .orElseThrow(() -> new AccountNotFoundException("Account with username " + loginRequestDto.username() + " not found"));
         String message;
         boolean ok = true;
+        String token = null;
         // 2. Validate password
-        if (!account.getPassword().equals(loginRequestDto.password())) {
-            // Option A: Throw a custom exception that your GlobalExceptionHandler catches
-            // Option B: Return a string that the Controller interprets
+        boolean passwordMatches = passwordEncoder.matches(loginRequestDto.password(), account.getPassword());
+        
+        // Fallback for plain text passwords (migration support for existing accounts)
+        if (!passwordMatches && !account.getPassword().startsWith("$2a$") && !account.getPassword().startsWith("$2b$")) {
+            passwordMatches = loginRequestDto.password().equals(account.getPassword());
+            if (passwordMatches) {
+                // Encode and save the password for future logins
+                account.setpassword(passwordEncoder.encode(loginRequestDto.password()));
+                accountRepository.save(account);
+            }
+        }
+        
+        if (!passwordMatches) {
             message = "Invalid Credentials";
             ok = false;
         }
-        else message = "Login Successful";
+        else {
+            message = "Login Successful";
+            token = jwtUtil.generateToken(account.getUsername(), account.getId());
+        }
         //masking password
         account.setpassword("");
-        return new LoginResponseDto(message, ok, account);
+        return new LoginResponseDto(message, ok, account, token);
     }
 
     public Account getAccountById(int id){

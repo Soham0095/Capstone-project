@@ -30,6 +30,7 @@ public class ChatServiceImpl implements ChatService {
                                     You have access to a database with tables:
                                     Account(id, holderName, balance, status, version, lastUpdated)
                                     TransactionLog(id, fromAccountId, toAccountId, amount, status, failureReason, idempotencyKey, createdOn)
+                                    RewardLog(id, accountId, points, description, createdOn)
 
                                     Rules (MANDATORY):
                                     - Return ONLY a valid SQL SELECT statement
