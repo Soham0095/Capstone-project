@@ -1,0 +1,33 @@
+CREATE TABLE `account` (
+   `id` bigint NOT NULL AUTO_INCREMENT,
+   `holder_name` varchar(255) DEFAULT NULL,
+   `balance` int DEFAULT NULL,
+   `status` enum('active','locked','closed') DEFAULT 'active',
+   `version` bigint DEFAULT NULL,
+   `last_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+   `username` varchar(255) DEFAULT NULL,
+   `password` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+ CREATE TABLE `transaction_log` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `from_account_id` int NOT NULL,
+    `to_account_id` int NOT NULL,
+    `amount` int NOT NULL,
+    `status` enum('SUCCESS','FAILED') NOT NULL,
+    `failure_reason` varchar(255) DEFAULT NULL,
+    `idempotency_key` varchar(255) DEFAULT NULL,
+    `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+  ) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+  CREATE TABLE `reward_ledger` (
+     `id` int NOT NULL AUTO_INCREMENT,
+     `account_id` int DEFAULT NULL,
+     `created_on` datetime(6) DEFAULT NULL,
+     `points_earned` int DEFAULT NULL,
+     `transaction_amount` int DEFAULT NULL,
+     `transaction_log_id` int DEFAULT NULL,
+     PRIMARY KEY (`id`)
+   ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
