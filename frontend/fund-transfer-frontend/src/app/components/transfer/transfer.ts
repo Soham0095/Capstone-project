@@ -65,7 +65,9 @@ export class Transfer {
       detail: response?.message || 'Transfer successful'
     });
 
+    // Refresh both account balance and reward points in parallel
     this.accountStore.fetchAccountDetails();
+    this.accountStore.fetchRewardPoints();
     this.router.navigate(['/dashboard']);
   },
 

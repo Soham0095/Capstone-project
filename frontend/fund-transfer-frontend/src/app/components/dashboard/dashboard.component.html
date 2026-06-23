@@ -12,6 +12,9 @@
       <div class="balance-amount">₹ {{ (accountStore.getAccount())?.balance || 0 | number:'1.2-2' }}</div>
       <div class="account-number">Account Number: {{ (accountStore.getAccount())?.id || 'XXXX-XXXX-1234' }}
       </div>
+      <div class="reward-badge" (click)="navigateTo('/rewards')">
+        ⭐ {{ rewardPoints() }} Reward Points
+      </div>
     </div>
 
     <div class="grid-actions">

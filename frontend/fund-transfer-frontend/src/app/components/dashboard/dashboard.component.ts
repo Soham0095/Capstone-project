@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountStore } from '../services/account-store.service';
 import { AccountService } from '../services/account.service';
+import { RewardService } from '../services/reward.service';
 import { Footer } from '../footer/footer';
 
 @Component({
@@ -17,6 +18,9 @@ export class DashboardComponent {
 
   accountStore = inject(AccountStore);
   accountService = inject(AccountService);
+  rewardService = inject(RewardService);
+
+  rewardPoints = signal<number>(0);
 
   showModal = false;
   currentAction: 'DEPOSIT' | 'WITHDRAW' = 'DEPOSIT';
@@ -28,7 +32,27 @@ export class DashboardComponent {
   toastType: 'success' | 'error' = 'success';
   isSubmitting = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    /**
+     * effect() tracks accountStore.account() as a reactive dependency.
+     * Whenever the account signal changes (login, fetchAccountDetails polling,
+     * or post-transfer refresh), this re-runs and fetches the latest reward points.
+     * untracked() stops the HTTP subscription itself from being tracked.
+     */
+    effect(() => {
+      const account = this.accountStore.account();
+      if (account?.id) {
+        untracked(() => {
+          this.rewardService.getRewards(account.id!).subscribe({
+            next: (summary) => this.rewardPoints.set(summary.totalPoints ?? 0),
+            error: () => console.warn('Could not load reward points for dashboard badge')
+          });
+        });
+      } else {
+        this.rewardPoints.set(0);
+      }
+    });
+  }
 
   navigateTo(path: string) {
     this.router.navigateByUrl(path);
@@ -52,14 +76,13 @@ export class DashboardComponent {
 
   closeModal(): void {
     this.showModal = false;
-    
     this.errorMessage = '';
     this.successMessage = '';
   }
 
   submitTransaction(): void {
     if (this.isSubmitting) return;
-    
+
     this.errorMessage = '';
     this.successMessage = '';
 
@@ -87,36 +110,25 @@ export class DashboardComponent {
 
     this.accountService.updateBalance(accountId, this.transactionAmount, this.currentAction).subscribe({
       next: (response) => {
-         this.closeModal(); 
+        this.closeModal();
         console.log(`${this.currentAction} successful:`, response);
-        
-        // Update the account store with new balance
 
+        // Update the account store with balance returned from server
+        // Note: setAccount triggers the effect above which re-fetches reward points
         const currentAccount = this.accountStore.getAccount();
+        if (currentAccount) {
+          this.accountStore.setAccount({
+            ...currentAccount,
+            balance: response.newBalance
+          });
+        }
 
-if (currentAccount && this.transactionAmount) {
-  const updatedAccount = {
-    ...currentAccount,
-    balance: this.currentAction === 'DEPOSIT'
-      ? currentAccount.balance + this.transactionAmount
-      : currentAccount.balance - this.transactionAmount
-  };
-
-  this.accountStore.setAccount(updatedAccount);
-}
-
-        
-
-        // Show success toast immediately
         this.toastMessage = `✅ ${this.currentAction === 'DEPOSIT' ? 'Deposit' : 'Withdrawal'} successful! Amount: ₹${this.transactionAmount}`;
         this.toastType = 'success';
         this.showToast = true;
         this.isSubmitting = false;
-        
-        // Hide toast after 3 seconds
-        setTimeout(() => {
-          this.showToast = false;
-        }, 3000);
+
+        setTimeout(() => { this.showToast = false; }, 3000);
       },
       error: (error) => {
         console.error(`${this.currentAction} failed:`, error);
@@ -126,10 +138,7 @@ if (currentAccount && this.transactionAmount) {
         this.showToast = true;
         this.isSubmitting = false;
 
-        // Hide toast after 3 seconds
-        setTimeout(() => {
-          this.showToast = false;
-        }, 3000);
+        setTimeout(() => { this.showToast = false; }, 3000);
       }
     });
   }

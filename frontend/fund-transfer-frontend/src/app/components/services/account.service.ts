@@ -69,9 +69,8 @@ export class AccountService {
       action: action
     };
 
-    return this.http.patch<any>(this.updateBalanceUrl, transactionRequest, { 
-      headers: headers ? headers : undefined,
-      responseType: 'text' as 'json'
+    return this.http.patch<any>(this.updateBalanceUrl, transactionRequest, {
+      headers: headers ? headers : undefined
     }).pipe(
       catchError((error) => {
         console.error('Update balance error:', error);

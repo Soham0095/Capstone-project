@@ -1,7 +1,6 @@
 package com.example.controller;
 
-
-import com.example.entity.TransactionLog;
+import com.example.dto.TransactionLogDto;
 import com.example.service.TransactionLogService;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class TransactionLogController {
 
     //get transaction logs by user id
     @GetMapping("/transactionLogs/{userId}")
-    public List<TransactionLog> getTransactionLogsByUserId(@PathVariable Integer userId) {
+    public List<TransactionLogDto> getTransactionLogsByUserId(@PathVariable Integer userId) {
         return transactionLogService.getTransactionLogsByUserId(userId);
     }
 

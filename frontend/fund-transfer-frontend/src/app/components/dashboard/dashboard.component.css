@@ -50,6 +50,28 @@
   margin-top: 8px;
 }
 
+.reward-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.reward-badge:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
 .grid-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -157,7 +179,7 @@
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 8px;
-  color: #333;
+  color: #1a1a1a;
 }
 
 .amount-input {
@@ -166,6 +188,8 @@
   border: 2px solid #e0e0e0;
   border-radius: 6px;
   font-size: 16px;
+  color: #1a1a1a;
+  background-color: #ffffff;
   box-sizing: border-box;
   transition: border-color 0.3s;
 }

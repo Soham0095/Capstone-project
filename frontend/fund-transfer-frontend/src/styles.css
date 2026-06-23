@@ -1,5 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
-/* PrimeNG Theme - Theme files not found, please install @primeng/themes and configure providePrimeNG in app.config.ts */
-/* @import "primeng/resources/themes/lara-light-blue/theme.css"; */
-/* @import "primeng/resources/primeng.min.css"; */
 @import "primeicons/primeicons.css";
+
+/* ─── Global colour safety net ───────────────────────────────────────────────
+   Prevents any input from ever showing invisible text (white-on-white or
+   black-on-black) regardless of component-level styles or OS dark mode.     */
+input,
+textarea,
+select {
+  color: #1a1a1a !important;
+  background-color: #ffffff !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9e9e9e !important;
+  opacity: 1;
+}

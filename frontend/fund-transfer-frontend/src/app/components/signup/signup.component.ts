@@ -63,7 +63,16 @@ export class SignupComponent {
       },
       error: (error) => {
         this.loading = false;
-        const errorMsg = error?.error?.message || error?.error || 'Failed to create account. Please try again.';
+        let errorMsg: string;
+        if (typeof error?.error === 'string') {
+          errorMsg = error.error;
+        } else if (error?.error?.message) {
+          errorMsg = error.error.message;
+        } else if (error?.message) {
+          errorMsg = error.message;
+        } else {
+          errorMsg = 'Failed to create account. Please try again.';
+        }
         this.messageService.add({ severity: 'error', summary: 'Error', detail: errorMsg });
       }
     });

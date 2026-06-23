@@ -1,22 +1,27 @@
-import { inject, Injectable, signal, OnDestroy } from '@angular/core';
+import { inject, Injectable, signal, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Account } from '../../models/account-model';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 
-
-
 @Injectable({ providedIn: 'root' })
 export class AccountStore implements OnDestroy {
   account = signal<Account | null>(null);
+  rewardPoints = signal<number>(0);
+
   private readonly baseUrl = 'http://localhost:8090/';
   private readonly accountUrl = `${this.baseUrl}accounts/`;
+  private readonly rewardsUrl = `${this.baseUrl}rewards/`;
   private intervalId: any;
 
+  private platformId = inject(PLATFORM_ID);
   messageService = inject(MessageService);
 
-
   constructor(private http: HttpClient) {
-    this.startPolling();
+    // Only start polling in the browser, not on the SSR server
+    if (isPlatformBrowser(this.platformId)) {
+      this.startPolling();
+    }
   }
 
   private startPolling() {
@@ -48,9 +53,23 @@ export class AccountStore implements OnDestroy {
     });
   }
 
+  /** Fetches latest reward points from backend and updates the signal. */
+  fetchRewardPoints() {
+    const accountId = this.account()?.id;
+    if (!accountId) return;
+
+    this.http.get<{ totalPoints: number }>(`${this.rewardsUrl}${accountId}`).subscribe({
+      next: (summary) => this.rewardPoints.set(summary?.totalPoints ?? 0),
+      error: (e) => console.warn('Could not fetch reward points:', e)
+    });
+  }
 
   setAccount(account: Account | null) {
     this.account.set(account);
+    // Automatically refresh reward points whenever account state changes
+    if (account?.id) {
+      this.fetchRewardPoints();
+    }
   }
 
   getAccount(): Account | null {
@@ -59,5 +78,6 @@ export class AccountStore implements OnDestroy {
 
   clear() {
     this.account.set(null);
+    this.rewardPoints.set(0);
   }
 }

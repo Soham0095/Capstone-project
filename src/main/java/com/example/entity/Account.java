@@ -2,6 +2,7 @@ package com.example.entity;
 
 import com.example.enums.AccountStatus;
 import jakarta.persistence.*;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,12 @@ import java.time.LocalDateTime;
 public class Account {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Integer id;
     private String holderName;
+    private String username;
+    private String password;
     private Integer balance = 0;
     @Enumerated(EnumType.STRING)
     private AccountStatus status = AccountStatus.active;

@@ -6,6 +6,7 @@ import com.example.entity.TransactionLog;
 import com.example.enums.AccountStatus;
 import com.example.enums.TransactionStatus;
 import com.example.exception.AccountNotActiveException;
+import com.example.exception.AccountNotFoundException;
 import com.example.exception.InsufficientBalanceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,19 +27,41 @@ public class TransferServiceImpl implements TransferService{
     @Override
     public boolean isValidTransfer(TransferRequestDto transferRequestDto){
 
-            // does account exist?
+            // validate account IDs are provided
+            if (transferRequestDto.fromAccountId() == null) {
+                throw new AccountNotFoundException("Source account ID is required");
+            }
+            if (transferRequestDto.toAccountId() == null) {
+                throw new AccountNotFoundException("Destination account ID is required");
+            }
+
+            // validate amount
+            if (transferRequestDto.amount() == null || transferRequestDto.amount() <= 0) {
+                throw new IllegalArgumentException("Transfer amount must be greater than zero");
+            }
+
+            // prevent self-transfer
+            if (transferRequestDto.fromAccountId().equals(transferRequestDto.toAccountId())) {
+                throw new IllegalArgumentException("Cannot transfer to the same account");
+            }
+
+            // does account exist? (throws AccountNotFoundException if not found)
             Account fromAccount = accountService.getAccountById(transferRequestDto.fromAccountId());
             Account toAccount = accountService.getAccountById(transferRequestDto.toAccountId());
 
             // status active?
-            if (!(fromAccount.getStatus() == AccountStatus.active && toAccount.getStatus() == AccountStatus.active)){
-                throw new AccountNotActiveException("Account not active");
+            if (fromAccount.getStatus() != AccountStatus.active) {
+                throw new AccountNotActiveException("Source account " + transferRequestDto.fromAccountId() + " is not active");
+            }
+            if (toAccount.getStatus() != AccountStatus.active) {
+                throw new AccountNotActiveException("Destination account " + transferRequestDto.toAccountId() + " is not active");
             }
 
             // sufficient balance?
-        if (fromAccount.getBalance() < transferRequestDto.amount()){
-            throw new InsufficientBalanceException("Account " + transferRequestDto.toAccountId() + " has insufficient balance");
-        }
+            if (fromAccount.getBalance() < transferRequestDto.amount()){
+                throw new InsufficientBalanceException("Insufficient balance: account " + transferRequestDto.fromAccountId()
+                    + " has ₹" + fromAccount.getBalance() + " but transfer requires ₹" + transferRequestDto.amount());
+            }
 
         return true;
     }
@@ -65,30 +88,5 @@ public class TransferServiceImpl implements TransferService{
         executeTransfer(transferRequestDto);
     }
 
-    }
-//        // create a transaction log - AOP
-//        TransactionLog transactionLog = new TransactionLog(
-//                transferRequestDto.fromAccountId(),
-//                transferRequestDto.toAccountId(),
-//                transferRequestDto.amount()
-//        );
-//        try {
-//            // validate transfer - AOP
-//            isValidTransfer(transferRequestDto);
-//            //execute func
-//            executeTransfer(transferRequestDto);
-//           // update transaction log - AOP
-//            transactionLog.setStatus(TransactionStatus.SUCCESS);
-//
-//            // exception handling and logging - AOP
-//        } catch (Exception e){
-//            transactionLog.setStatus(TransactionStatus.FAILURE);
-//            transactionLog.setFailureReason(e.getMessage());
-//            throw e;
-//        }
-//        finally {
-//            // save transaction log - AOP
-//            transactionLogService.createTransactionLog(transactionLog);
-//        }
-//    }
-//}
+}
+

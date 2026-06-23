@@ -18,8 +18,11 @@
                     {{ t.fromAccountId === this.accountStore.getAccount()!.id ? '↑' : '↓' }}
                 </div>
                 <div class="transaction-details">
-                    <div class="transaction-name">{{ t.fromAccountId === this.accountStore.getAccount()!.id ? 'Sent to '
-                        + t.toAccountId : 'Received from ' + t.fromAccountId }}</div>
+                    <div class="transaction-name">
+                        {{ t.fromAccountId === this.accountStore.getAccount()!.id
+                            ? 'Sent to ' + t.toHolderName
+                            : 'Received from ' + t.fromHolderName }}
+                    </div>
                     <div class="transaction-date">{{ t.createdOn | date: "MMM d, y h:mma" }}</div>
                 </div>
                 <div class="transaction-amount-status">

@@ -6,8 +6,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/account
     username: root
-    password: Root123$
+    password: Akash@123
 
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 server:
   port: 8090
+
+jwt:
+  secret: 7A25432A462D4A614E645267556B58703273357638792F423F4528482B4D6251
+  expiration-ms: 86400000

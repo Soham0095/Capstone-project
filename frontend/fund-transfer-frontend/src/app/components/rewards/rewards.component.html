@@ -1,0 +1,70 @@
+<div class="rewards-page">
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading your rewards...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading() && error()" class="error-banner">
+    ⚠️ {{ error() }}
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading() && !error()">
+
+    <!-- Header -->
+    <div class="page-header">
+      <button class="back-btn" (click)="router.navigate(['/dashboard'])">←</button>
+      <h1>My Rewards</h1>
+    </div>
+
+    <!-- Points Summary Card -->
+    <div class="points-card" [style.--tier-color]="tier.color">
+      <div class="tier-badge">{{ tier.icon }} {{ tier.label }}</div>
+      <div class="points-value">{{ totalPoints() }}</div>
+      <div class="points-label">Reward Points</div>
+      <div class="points-sub">Earn 1 pt for every ₹100 transferred</div>
+
+      <!-- Tier Progress Hints -->
+      <div class="tier-hint" *ngIf="totalPoints() < 500">
+        <span *ngIf="totalPoints() < 50">{{ 50 - totalPoints() }} pts to Silver 🥈</span>
+        <span *ngIf="totalPoints() >= 50 && totalPoints() < 200">{{ 200 - totalPoints() }} pts to Gold 🥇</span>
+        <span *ngIf="totalPoints() >= 200 && totalPoints() < 500">{{ 500 - totalPoints() }} pts to Platinum 💎</span>
+      </div>
+      <div class="tier-hint" *ngIf="totalPoints() >= 500">
+        🏆 You've reached the highest tier!
+      </div>
+    </div>
+
+    <!-- Reward History -->
+    <div class="history-section">
+      <h2 class="history-title">Reward History</h2>
+
+      <!-- Empty State -->
+      <div *ngIf="history().length === 0" class="empty-state">
+        <div class="empty-icon">⭐</div>
+        <p class="empty-title">No rewards yet</p>
+        <p class="empty-sub">Transfer ₹100 or more to start earning points!</p>
+      </div>
+
+      <!-- History List -->
+      <div *ngIf="history().length > 0" class="history-list">
+        <div class="history-item" *ngFor="let item of history()">
+          <div class="item-left">
+            <div class="item-icon">⭐</div>
+            <div class="item-info">
+              <div class="item-title">Transfer of ₹{{ item.transactionAmount | number }}</div>
+              <div class="item-date">{{ item.createdOn | date: 'MMM d, y • h:mm a' }}</div>
+            </div>
+          </div>
+          <div class="item-points">+{{ item.pointsEarned }} pt{{ item.pointsEarned > 1 ? 's' : '' }}</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <app-footer></app-footer>
+</div>

@@ -1,11 +1,12 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, of } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AccountStore } from './account-store.service';
 
 interface LoginResponse {
-  // token: string;
+  token: string;
   message: string;
   ok: boolean;
   body: any;
@@ -13,60 +14,63 @@ interface LoginResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // private readonly tokenKey = 'auth_token';
+  private readonly tokenKey = 'auth_token';
   private baseUrl = 'http://localhost:8090';
   private loginUrl = `${this.baseUrl}/login`;
 
+  // Inject platform id to detect browser vs SSR server
+  private platformId = inject(PLATFORM_ID);
   accountStoreService = inject(AccountStore);
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  //to be used when jwt is implemented
-  // login(username: string, password: string): Observable<LoginResponse> {
-  //   // Backend endpoint is unknown — defaulting to /api/auth/login
-  //   return this.http.post<LoginResponse>('/api/auth/login', { username, password }).pipe(
-  //     tap((res) => {
-  //       if (res && res.token) {
-  //         localStorage.setItem(this.tokenKey, res.token);
-  //       }
-  //     })
-  //   );
-  // }
-
-  // Convenience method for development/testing when backend is not available
-  // mockLogin(username: string, password: string): Observable<LoginResponse> {
-  //   const fakeToken = btoa(username + ':' + password + ':' + Date.now());
-  //   localStorage.setItem(this.tokenKey, fakeToken);
-  //   return of({ token: fakeToken });
-  // }
-
-  //Used now for simple login using password comparision
+  /**
+   * POST /login — validates credentials, receives JWT, stores it in localStorage.
+   * Network tab: Look at POST /login → Response → you will see the "token" field.
+   */
   login(username: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.loginUrl, { username, password }).pipe(
       tap((res) => {
-        if (res && res.ok) {
-          console.log("Login Successful!");
+        if (res && res.ok && res.token) {
+          this.setToken(res.token);
+          console.log('JWT token saved to localStorage');
+        } else {
+          console.log('Login Failed!');
         }
-        else {
-          console.log("Login Failed!");
-        }
-        return res;
       })
     );
   }
 
   logout(): void {
-    // localStorage.removeItem(this.tokenKey);
-    // this.router.navigate(['/']);
+    this.removeToken();
+    this.accountStoreService.clear();
+    this.router.navigate(['/']);
   }
 
+  /** Returns the stored JWT token, or null if not logged in / running on SSR server. */
   getToken(): string | null {
-    // return localStorage.getItem(this.tokenKey);
-    return "<temp>";
+    if (!isPlatformBrowser(this.platformId)) {
+      return null; // localStorage does not exist on the SSR server
+    }
+    return localStorage.getItem(this.tokenKey);
   }
 
-  isAuthenticated(): any {
-    // return !!this.getToken();
+  /** True if a real JWT token exists in localStorage (browser only). */
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
 
+  // --- Private helpers ---
+
+  private setToken(token: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.tokenKey, token);
+    }
+  }
+
+  private removeToken(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.tokenKey);
+    }
   }
 }

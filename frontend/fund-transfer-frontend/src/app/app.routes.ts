@@ -6,6 +6,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { Transfer } from './components/transfer/transfer';
 import { AdminAiComponent } from './components/admin-ai/admin-ai.component';
+import { RewardsComponent } from './components/rewards/rewards.component';
 
 import { authGuard } from './guards/auth-guard';
 
@@ -16,5 +17,7 @@ export const routes: Routes = [
 	{ path: 'transaction-history', component: TransactionHistory, canActivate: [authGuard] },
 	{ path: 'transfer', component: Transfer, canActivate: [authGuard] },
 	{ path: 'admin-ai', component: AdminAiComponent, canActivate: [authGuard] },
-	{ path: 'profile', component: ProfileComponent, canActivate: [authGuard] }
+	{ path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+	{ path: 'rewards', component: RewardsComponent, canActivate: [authGuard] }
 ];
+

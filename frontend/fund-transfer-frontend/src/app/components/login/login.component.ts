@@ -74,8 +74,8 @@ export class LoginComponent {
       error: (err) => {
         this.loading.set(false);
         console.log(err);
-        console.log(this.loading());
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: `${err.error.message}` });
+        const detail = err?.error?.message || err?.message || 'Login failed. Please try again.';
+        this.messageService.add({ severity: 'error', summary: 'Error', detail });
         this.form.reset();
       }
     });

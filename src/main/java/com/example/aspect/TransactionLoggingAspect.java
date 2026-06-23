@@ -1,7 +1,10 @@
 package com.example.aspect;
 
+import com.example.dto.TransferRequestDto;
+import com.example.entity.TransactionLog;
 import com.example.enums.TransactionStatus;
 import com.example.repository.TransactionLogRepository;
+import com.example.service.RewardService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -16,33 +19,50 @@ public class TransactionLoggingAspect {
     @Autowired
     private TransactionLogRepository transactionLogRepository;
 
+    @Autowired
+    private RewardService rewardService;
+
     @AfterReturning(pointcut = "execution(* com.example.service.TransferService.transfer(..))")
     public void logTransaction(JoinPoint joinPoint) {
-        saveLog(joinPoint, "SUCCESS",null);
+        // Save the log and get back the persisted entity (with its generated ID)
+        TransactionLog saved = saveLog(joinPoint, "SUCCESS", null);
+
+        // Wire in reward grant — isolated in try-catch so a reward failure
+        // never propagates back and masks a successful transfer to the user
+        if (saved != null) {
+            Object[] args = joinPoint.getArgs();
+            if (args.length > 0 && args[0] instanceof TransferRequestDto dto) {
+                try {
+                    rewardService.grantReward(dto, saved.getId());
+                } catch (Exception e) {
+                    System.err.println("Reward grant failed (transfer was successful): " + e.getMessage());
+                }
+            }
+        }
     }
 
     @AfterThrowing(pointcut = "execution(* com.example.service.TransferService.transfer(..))", throwing = "ex")
     public void logTransactionException(JoinPoint joinPoint, Exception ex) {
         saveLog(joinPoint, "FAILED", ex.getMessage());
+        // No reward on failure — nothing else to do here
     }
 
-    private void saveLog(JoinPoint joinPoint, String status, String failure_reason) {
+    /**
+     * Persists a TransactionLog row and returns the saved entity (with generated ID).
+     * Returns null if the join point args don't match the expected shape.
+     */
+    private TransactionLog saveLog(JoinPoint joinPoint, String status, String failureReason) {
         Object[] args = joinPoint.getArgs();
-        if (args.length > 0 && args[0] instanceof com.example.dto.TransferRequestDto transferRequestDto) {
-            com.example.entity.TransactionLog transactionLog = new com.example.entity.TransactionLog(
+        if (args.length > 0 && args[0] instanceof TransferRequestDto transferRequestDto) {
+            TransactionLog transactionLog = new TransactionLog(
                     transferRequestDto.fromAccountId(),
                     transferRequestDto.toAccountId(),
                     transferRequestDto.amount()
             );
             transactionLog.setStatus(TransactionStatus.valueOf(status));
-            transactionLog.setFailureReason(failure_reason);
-            transactionLogRepository.save(transactionLog);
-
+            transactionLog.setFailureReason(failureReason);
+            return transactionLogRepository.save(transactionLog);
         }
-
+        return null;
     }
-
-
 }
-
-

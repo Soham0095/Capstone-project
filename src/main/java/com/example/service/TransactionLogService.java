@@ -6,12 +6,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.dto.TransactionLogDto;
 import com.example.entity.TransactionLog;
 
 @Service
 public interface TransactionLogService {
     public void createTransactionLog(TransactionLog transactionLog);
 
-    public List<TransactionLog> getTransactionLogsByUserId(Integer userId);
+    public List<TransactionLogDto> getTransactionLogsByUserId(Integer userId);
 
 }

@@ -85,13 +85,13 @@
 .sender-name {
     margin: 0;
     font-size: 14px;
-    color: #333;
+    color: #1a1a1a;
 }
 
 .sender-meta {
     margin: 2px 0 0;
     font-size: 12px;
-    color: #666;
+    color: #555;
 }
 
 /* Direction Indicator */
@@ -126,11 +126,11 @@
     width: 100%;
     padding: 12px 12px;
     font-size: 14px;
+    color: #1a1a1a;
+    background-color: #ffffff;
     border: 1px solid #1976d2;
-    /* Matching the blue border in screenshot for active fields */
     border-radius: 8px;
     box-sizing: border-box;
-    /* Ensure padding doesn't affect width */
     outline: none;
 }
 
@@ -158,15 +158,17 @@
     top: 50%;
     transform: translateY(-50%);
     font-weight: bold;
-    color: #333;
+    color: #1a1a1a;
     font-size: 18px;
+    pointer-events: none;
 }
 
 .amount-input {
     padding-left: 30px;
     font-weight: bold;
     font-size: 18px;
-    color: #333;
+    color: #1a1a1a;
+    background-color: #ffffff;
 }
 
 /* Actions */
